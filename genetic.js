@@ -43,3 +43,12 @@ function clear() {
     points.length = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
+
+document.getElementById('third').onclick = toBack;
+
+function toBack() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    points.length--;
+    drawPoints();
+    join();
+}
