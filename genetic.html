@@ -15,14 +15,12 @@
         background-color: rgba(132,142,156,0.3);
         height: 650px;
         width: 650px;
-        right: 200px;
         cursor: pointer;
         border: 3px solid gray;
         
     }
 
     button{
-        left: 200px;
         cursor: pointer;
         font-size: 20px;
     }
@@ -31,8 +29,8 @@
     <h1><center>Генетический алгоритм</center></h1>
     <canvas id="canvas" width="650" height="650"></canvas>
     <p></p>
-    <button>Старт</button>
-    <button>Очистить</button>
+    <button name="first" onclick="start()">Старт</button>
+    <button id="second" onclick="clear()">Очистить</button>
     <button>Ctrl+z</button>
     <script src="genetic.js" type="module"></script>
 </body>

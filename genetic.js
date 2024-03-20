@@ -10,7 +10,7 @@ canvas.addEventListener('click', function(event) {
     points.push({ x, y });
 
     drawPoints();
-    soed();
+    join();
 });
 
 function drawPoints() {
@@ -24,16 +24,22 @@ function drawPoints() {
     });
 }
 
-function soed() {
+function join() {
     ctx.beginPath();
     for(let i = 0; i < points.length; i++)
     {
         for(let j = 0; j < points.length; j++)
         {
             ctx.moveTo(points[i].x, points[i].y);
-            points.forEach(point => ctx.lineTo(point.x, point.y));
             ctx.lineTo(points[j].x, points[j].y);
             ctx.stroke();
         }
     }
+}
+
+document.getElementById('second').onclick = clear;
+
+function clear() {
+    points.length = 0;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
