@@ -1,6 +1,8 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+ctx.font = "14px serif";
 const points = [];
+
 
 canvas.addEventListener('click', function(event) {
     const rect = canvas.getBoundingClientRect();
@@ -10,8 +12,33 @@ canvas.addEventListener('click', function(event) {
     points.push({ x, y });
 
     drawPoints();
-    join();
+    joinPoints();
+    drawDistance();
 });
+
+function drawDistance() {
+    for (let i = 0; i < points.length; i++) {
+        for (let j = i + 1; j < points.length; j++)
+        {
+            const first = points[i];
+            const second = points[j];
+
+            const distance = calcDistance(first, second);
+            const center = findCenter(first, second);
+
+            ctx.fillStyle = 'blue';
+            ctx.fillText(distance.toFixed(0), center.x, center.y);
+        }
+    }
+}
+
+function findCenter(first, second) {
+    return { x: (first.x + second.x)/2, y: (first.y + second.y)/2};
+}
+
+function calcDistance(first, second) {
+    return Math.hypot(first.x - second.x, first.y - second.y);
+}
 
 function drawPoints() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -24,7 +51,7 @@ function drawPoints() {
     });
 }
 
-function join() {
+function joinPoints() {
     ctx.beginPath();
     for(let i = 0; i < points.length; i++)
     {
@@ -50,5 +77,17 @@ function toBack() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     points.length--;
     drawPoints();
-    join();
+    joinPoints();
+    drawDistance();
+}
+
+function geneticAlgorythm()
+{
+
+}
+
+document.getElementById('first').onclick = start;
+
+function start() {
+    geneticAlgorythm();
 }
