@@ -88,6 +88,13 @@ function toBack() {
 
 function antAlgorythm()
 {
+    let bestDistance = 0;
+    let countAnts = points.length;
+    let q = 0;
+    for(let i = 0; i < distances.length; i++)
+    {
+        q = (q+distances[i])/(i+1);
+    }
 
 }
 
