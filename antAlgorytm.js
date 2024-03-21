@@ -2,6 +2,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 ctx.font = "14px serif";
 const points = [];
+const distances = [];
 
 
 canvas.addEventListener('click', function(event) {
@@ -28,6 +29,8 @@ function drawDistance() {
 
             ctx.fillStyle = 'blue';
             ctx.fillText(distance.toFixed(0), center.x, center.y);
+
+            distances.push(calcDistance(first, second));
         }
     }
 }
@@ -69,6 +72,7 @@ document.getElementById('second').onclick = clear;
 function clear() {
     points.length = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    distances.length = 0;
 }
 
 document.getElementById('third').onclick = toBack;
@@ -76,6 +80,7 @@ document.getElementById('third').onclick = toBack;
 function toBack() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     points.length--;
+    distances.length--;
     drawPoints();
     joinPoints();
     drawDistance();
