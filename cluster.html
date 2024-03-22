@@ -9,7 +9,7 @@
     canvas {
         background-color: rgba(132,142,156,0.3);
         height: 600px;
-        width: 1450px;
+        width: 1000px;
         cursor: pointer;
         border: 3px solid gray;
         display: block;
@@ -24,8 +24,9 @@
 </style>
 <body>
     <h1><center>Алгоритм кластеризации</center></h1>
-    <canvas id="canvas" width="600" height="600"></canvas>
-    <button id="start" onclick="start()">Старт</button>
-    <button id="clear" onclick="clear()">Очистить</button>
+    <input type="color" id="colorPicker" value="#000000" /> <!-- Поле выбора цвета -->
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <button onclick="cluster()">Cluster</button>
+    <script src="cluster.js"></script>
 </body>
 </html>
