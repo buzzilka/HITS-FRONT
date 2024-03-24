@@ -2,6 +2,8 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 var num, cellSize;
 var cells;
+var currentStart=[];
+var currentFinish=[];
 
 function input()
 {
@@ -10,18 +12,14 @@ function input()
   create();
 }
 
-var isUsed;
 function clear()
 {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   cells = new Array(num);
-  isUsed = new Array(num);
   for (let i = 0; i < num; i++) {
     cells[i]=new Array(num);//массив стен и коридоров
-    isUsed[i] = new Array(num);//массив для генерации
     for (let j = 0;j<num;j++){
       cells[i][j]="wall";
-      isUsed[i][j] = false;
     }
   }
 }
@@ -41,9 +39,16 @@ function drawGrid()
 }
 function generateLabyrinth()
 {
+  var isUsed = new Array(num);//массив для генерации
+  for (let i = 0; i < num; i++) {
+    isUsed[i] = new Array(num);
+    for (let j = 0;j<num;j++){
+      isUsed[i][j] = false;
+    }
+  }
   //выбор точки начала
-  var x = Math.floor(Math.random() * Math.floor(num / 2)) * 2 + 1;
-  var y = Math.floor(Math.random() * Math.floor(num / 2)) * 2 + 1;
+  var x = Math.floor(Math.random() * num / 2) * 2;
+  var y = Math.floor(Math.random() * num / 2) * 2;
   cells[y][x]="empty";
   isUsed[y][x]=true;
   //добавление возможных точек перехода
@@ -112,6 +117,7 @@ function generateLabyrinth()
     }
   }
   //отрисовка
+  cells[num-2][num-1]="empty";//проход до финиша
   for (let y = 0; y < num; y++) {
     for (let x = 0; x < num; x++) {
       if (cells[y][x]=="empty")
@@ -122,8 +128,6 @@ function generateLabyrinth()
     }
   }
 }
-var currentStart=[];
-var currentFinish=[];
 function setDefaultStartFinish()
 {
   currentStart.length=0;
@@ -168,10 +172,12 @@ canvas.addEventListener('click', function(event) {
   }
   if (change=="begin")
   {
+    if (cells[currentStart[0].y][currentStart[0].x]=="start"){
     //убрать старый старт
     ctx.fillStyle = currentStart[0].type=="wall"?'black':currentStart[0].type=="empty"?'white':currentStart[0].type=="start"?'green':'red';
     ctx.fillRect(currentStart[0].x*cellSize+1, currentStart[0].y*cellSize+1, cellSize-2, cellSize-2); 
     cells[currentStart[0].y][currentStart[0].x]=currentStart[0].type;
+    }
     //обозначить новый старт
     ctx.fillStyle = 'green';
     ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
@@ -180,16 +186,21 @@ canvas.addEventListener('click', function(event) {
   }
   if (change=="end")
   {
+    if ( cells[currentFinish[0].y][currentFinish[0].x]=="finish"){
     ctx.fillStyle = currentFinish[0].type=="wall"?'black':currentFinish[0].type=="empty"?'white':currentFinish[0].type=="start"?'green':'red';
     ctx.fillRect(currentFinish[0].x*cellSize+1, currentFinish[0].y*cellSize+1, cellSize-2, cellSize-2); 
     cells[currentFinish[0].y][currentFinish[0].x]=currentFinish[0].type;
-
+    }
     ctx.fillStyle = 'red';
     ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
     currentFinish[0]={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]};
     cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="finish";  
   }
 });
+function aStar()
+{
+  
+}
 function start()
 {
   if (cells[currentStart[0].y][currentStart[0].x]!="start" && cells[currentFinish[0].y][currentFinish[0].x]!="finish"){
