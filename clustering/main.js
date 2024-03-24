@@ -38,7 +38,7 @@ function getClusterNums(){
 }
 
 function startAlg(){
-    if (clusterCount > 0 && clusterCount <= points.length) {
+    if (clusterCount <= points.length) {
         cluster(clusterCount, points, canvas, ctx);
     } else {
         alert('Введите корректное количество кластеров!');
