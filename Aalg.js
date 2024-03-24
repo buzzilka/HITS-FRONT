@@ -153,6 +153,7 @@ var change = document.getElementById('redact').value;
 function redact() {
   change = document.getElementById('redact').value;
 }
+var startFinish="startFinish";//для отмены стен
 canvas.addEventListener('click', function(event) {
   //координаты клика
   const rect = canvas.getBoundingClientRect();
@@ -161,9 +162,19 @@ canvas.addEventListener('click', function(event) {
   if (change=="walls")
   {
     if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="wall"){
-      ctx.fillStyle = 'white';
+      if (Math.floor(y/cellSize)==currentStart[0].y && Math.floor(x/cellSize)==currentStart[0].x && startFinish!="finish"){
+        ctx.fillStyle = 'green';
+        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="start";
+      }
+      else if (Math.floor(y/cellSize)==currentFinish[0].y && Math.floor(x/cellSize)==currentFinish[0].x  && startFinish!="start"){
+        ctx.fillStyle = 'red';
+        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="finish";
+      }
+      else{
+        ctx.fillStyle = 'white';
+        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="empty";
+      }
       ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2); 
-      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="empty";
     }
     else{
       ctx.clearRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
@@ -178,6 +189,9 @@ canvas.addEventListener('click', function(event) {
     ctx.fillRect(currentStart[0].x*cellSize+1, currentStart[0].y*cellSize+1, cellSize-2, cellSize-2); 
     cells[currentStart[0].y][currentStart[0].x]=currentStart[0].type;
     }
+    if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="finish"){//для отмены стен
+      startFinish="start";
+    }
     //обозначить новый старт
     ctx.fillStyle = 'green';
     ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
@@ -186,10 +200,13 @@ canvas.addEventListener('click', function(event) {
   }
   if (change=="end")
   {
-    if ( cells[currentFinish[0].y][currentFinish[0].x]=="finish"){
+    if (cells[currentFinish[0].y][currentFinish[0].x]=="finish"){
     ctx.fillStyle = currentFinish[0].type=="wall"?'black':currentFinish[0].type=="empty"?'white':currentFinish[0].type=="start"?'green':'red';
     ctx.fillRect(currentFinish[0].x*cellSize+1, currentFinish[0].y*cellSize+1, cellSize-2, cellSize-2); 
     cells[currentFinish[0].y][currentFinish[0].x]=currentFinish[0].type;
+    }
+    if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="start"){//для отмены стен
+      startFinish="finish";
     }
     ctx.fillStyle = 'red';
     ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
@@ -197,6 +214,9 @@ canvas.addEventListener('click', function(event) {
     cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="finish";  
   }
 });
+function heuristic(){//Manhattan
+
+}
 function aStar()
 {
   
