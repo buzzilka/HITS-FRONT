@@ -23,11 +23,3 @@ function drawPoints() {
   ctx.fill();
  });
 }
-
-function cluster() {
-
-}
-
-document.getElementById('colorPicker').addEventListener('change', function() {
- selectedColor = this.value;
-});
