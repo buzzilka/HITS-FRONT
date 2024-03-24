@@ -10,130 +10,195 @@ function input()
   create();
 }
 
-function create()
+var isUsed;
+function clear()
 {
-  //очистка
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   cells = new Array(num);
-  let isUsed = new Array(num);
+  isUsed = new Array(num);
   for (let i = 0; i < num; i++) {
-    cells[i]=new Array(num);
-    isUsed[i] = new Array(num);
+    cells[i]=new Array(num);//массив стен и коридоров
+    isUsed[i] = new Array(num);//массив для генерации
     for (let j = 0;j<num;j++){
-      cells[i][j]=1;
+      cells[i][j]="wall";
       isUsed[i][j] = false;
     }
   }
-
-  //сетка
+}
+function drawGrid()
+{
   ctx.beginPath();
-  for (let i = 0; i <= num; i++) {
+  for (let i = 0; i <= num; i++) {//вертикали
     ctx.moveTo(i * cellSize, 0);
     ctx.lineTo(i * cellSize, canvas.height);
   }
-  for (let i = 0; i <= num; i++) {
+  for (let i = 0; i <= num; i++) {//горизонтали
     ctx.moveTo(0, i * cellSize);
     ctx.lineTo(canvas.width, i * cellSize);
   }
   ctx.strokeStyle = 'grey';
   ctx.stroke();
-
-  //лабиритнт(Прим)
+}
+function generateLabyrinth()
+{
+  //выбор точки начала
   var x = Math.floor(Math.random() * Math.floor(num / 2)) * 2 + 1;
   var y = Math.floor(Math.random() * Math.floor(num / 2)) * 2 + 1;
-  cells[x][y]=0;
-  isUsed[x][y]=true;
+  cells[y][x]="empty";
+  isUsed[y][x]=true;
+  //добавление возможных точек перехода
   var check = [];
   if (y - 2 >= 0) {
     check.push({x: x, y: y-2});
-    isUsed[x][y-2]=true;
+    isUsed[y-2][x]=true;
   }
   if (y + 2 < num) {
     check.push({x: x, y: y+2});
-    isUsed[x][y+2]=true;
+    isUsed[y+2][x]=true;
   }
   if (x - 2 >= 0) {
     check.push({x: x - 2, y: y});
-    isUsed[x-2][y]=true;
+    isUsed[y][x-2]=true;
   }
   if (x + 2 < num) {
     check.push({x: x + 2, y: y});
-    isUsed[x+2][y]=true;
+    isUsed[y][x+2]=true;
   }
-
+ //пока есть элементы в массиве, выбрать один и убрать стены.
   while (check.length > 0) {
     var index = Math.floor(Math.random() * check.length);
     x = check[index].x;
     y = check[index].y;
-    cells[x][y]=0;
+    cells[y][x]="empty";
     check.splice(index,1);
 
     var d = [0,1,2,3];
     while (d.length>0) {
       var rand = Math.floor(Math.random() * d.length);
-      if (y - 2 >= 0 && cells[x][y - 2]==0 && d[rand]==0) {
-        cells[x][y - 1]=0;
+      if (y - 2 >= 0 && cells[y-2][x]=="empty" && d[rand]==0) {
+        cells[y-1][x]="empty";
         d.length=0;
       }
-      if (y + 2 < num && cells[x][y + 2]==0 && d[rand]==1) {
-        cells[x][y + 1]=0;
+      if (y + 2 < num && cells[y+2][x]=="empty" && d[rand]==1) {
+        cells[y+1][x]="empty";
         d.length=0;
       }
-      if (x - 2 >= 0 && cells[x - 2][y]==0 && d[rand]==2) {
-        cells[x - 1][y]=0;
+      if (x - 2 >= 0 && cells[y][x-2]=="empty" && d[rand]==2) {
+        cells[y][x-1]="empty";
         d.length=0;
       }
-      if (x + 2 < num && cells[x + 2][y]==0 && d[rand]==3) {
-        cells[x + 1][y]=0;
+      if (x + 2 < num && cells[y][x+2]=="empty" && d[rand]==3) {
+        cells[y][x+1]="empty";
         d.length=0;
       }
       d.splice(rand,1);
     }
-
-    if (y - 2 >= 0 && cells[x][y - 2]==1 && isUsed[x][y-2]!=true) {
+    //добавление возможных точек перехода
+    if (y - 2 >= 0 && cells[y-2][x]=="wall" && isUsed[y-2][x]!=true) {
       check.push({x: x, y: y-2});
-      isUsed[x][y-2]=true;
+      isUsed[y-2][x]=true;
     }
-    if (y + 2 < num && cells[x][y + 2]==1&& isUsed[x][y+2]!=true) {
+    if (y + 2 < num && cells[y+2][x]=="wall" && isUsed[y+2][x]!=true) {
       check.push({x: x, y: y+2});
-      isUsed[x][y+2]=true;
+      isUsed[y+2][x]=true;
     }
-    if (x - 2 >= 0 && cells[x - 2][y]==1&& isUsed[x-2][y]!=true) {
+    if (x - 2 >= 0 && cells[y][x-2]=="wall" && isUsed[y][x-2]!=true) {
       check.push({x: x - 2, y: y});
-      isUsed[x-2][y]=true;
+      isUsed[y][x-2]=true;
     }
-    if (x + 2 < num && cells[x + 2][y]==1&& isUsed[x+2][y]!=true) {
+    if (x + 2 < num && cells[y][x+2]=="wall" && isUsed[y][x+2]!=true) {
       check.push({x: x + 2, y: y});
-      isUsed[x+2][y]=true;
+      isUsed[y][x+2]=true;
     }
   }
-  for (let x = 0; x < num; x++) {
-    for (let y = 0; y < num; y++) {
-      if (cells[x][y]==0)
+  //отрисовка
+  for (let y = 0; y < num; y++) {
+    for (let x = 0; x < num; x++) {
+      if (cells[y][x]=="empty")
       {
         ctx.fillStyle = 'white';
         ctx.fillRect(x*cellSize+1, y*cellSize+1, cellSize-2, cellSize-2); 
       }
     }
   }
+}
+var currentStart=[];
+var currentFinish=[];
+function setDefaultStartFinish()
+{
+  currentStart.length=0;
+  currentFinish.length=0;
   ctx.fillStyle = 'green';
   ctx.fillRect(1, 1, cellSize-2, cellSize-2);
+  currentStart.push({x:0,y:0,type:cells[0][0]});
+  cells[0][0]="start";
   ctx.fillStyle = 'red';
   ctx.fillRect((num-1)*cellSize+1, (num-1)*cellSize+1, cellSize-2, cellSize-2);
+  currentFinish.push({x:num-1,y:num-1,type:cells[num-1][num-1]});
+  cells[num-1][num-1]="finish";
+}
+function create()
+{
+  clear();
+  drawGrid();
+  generateLabyrinth();
+  setDefaultStartFinish();
 }
 
+var change = document.getElementById('redact').value;
+function redact() {
+  change = document.getElementById('redact').value;
+}
 canvas.addEventListener('click', function(event) {
+  //координаты клика
   const rect = canvas.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
-  if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]==1)
+  if (change=="walls")
   {
-    ctx.fillStyle = 'white';
-    ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2); 
-    cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=0;
+    if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="wall"){
+      ctx.fillStyle = 'white';
+      ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2); 
+      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="empty";
+    }
+    else{
+      ctx.clearRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
+      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="wall";
+    }
   }
-  else{
-    ctx.clearRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
-    cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=1;
+  if (change=="begin")
+  {
+    //убрать старый старт
+    ctx.fillStyle = currentStart[0].type=="wall"?'black':currentStart[0].type=="empty"?'white':currentStart[0].type=="start"?'green':'red';
+    ctx.fillRect(currentStart[0].x*cellSize+1, currentStart[0].y*cellSize+1, cellSize-2, cellSize-2); 
+    cells[currentStart[0].y][currentStart[0].x]=currentStart[0].type;
+    //обозначить новый старт
+    ctx.fillStyle = 'green';
+    ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
+    currentStart[0]={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]};
+    cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="start";
+  }
+  if (change=="end")
+  {
+    ctx.fillStyle = currentFinish[0].type=="wall"?'black':currentFinish[0].type=="empty"?'white':currentFinish[0].type=="start"?'green':'red';
+    ctx.fillRect(currentFinish[0].x*cellSize+1, currentFinish[0].y*cellSize+1, cellSize-2, cellSize-2); 
+    cells[currentFinish[0].y][currentFinish[0].x]=currentFinish[0].type;
+
+    ctx.fillStyle = 'red';
+    ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
+    currentFinish[0]={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]};
+    cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="finish";  
   }
 });
+function start()
+{
+  if (cells[currentStart[0].y][currentStart[0].x]!="start" && cells[currentFinish[0].y][currentFinish[0].x]!="finish"){
+  alert("please, set start and finish");
+  }
+  else if (cells[currentStart[0].y][currentStart[0].x]!="start"){
+    alert("please, set start");
+  }
+  else if (cells[currentFinish[0].y][currentFinish[0].x]!="finish"){
+    alert("please, set finish");
+  }
+}

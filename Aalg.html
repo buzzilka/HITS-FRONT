@@ -20,9 +20,14 @@
     <canvas id="canvas" height=500px width=500px></canvas>
     <label>Number input </label><input id="number-in" name="number-in" type="number" min="2" max="100" step="1"/>
     <button id="input" onclick="input()">Ввод</button>
+    <p></p>
+    <select id="redact" name="redact" onchange="redact()">
+      <option value="walls">Изменить стены</option>
+      <option value="begin">Установить старт</option>
+      <option value="end">Установить финиш</option>
+    </select>
+    <p></p>
     <button id="start" onclick="start()">Начать</button>
-    <button id="begin" onclick="begin()">Выбрать начало</button>
-    <button id="end" onclick="end()">Выбрать конец</button>
     <script src="Aalg.js"></script>
 </body>
 </html>
