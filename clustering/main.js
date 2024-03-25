@@ -37,5 +37,11 @@ function startAlg(){
     }
 }
 
+function clearCanvas() {
+    points.length = 0;
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+}
+
+window.clearCanvas = clearCanvas;
 window.getClusterNums = getClusterNums;
 window.startAlg = startAlg;
