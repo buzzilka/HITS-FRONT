@@ -282,16 +282,15 @@ function aStar(){
   }
 // не найден финиш
 if (current.x != currentFinish.x && current.y != currentFinish.y) {
-    alert("Не получается найти путь 😭");
+    alert("Пути нет :(");
 } 
 else {//рисуем путь
-  console.log(current,current.parent);
   current=current.parent;
   for(;current.parent != null; current = current.parent) {
-    console.log(current);
     ctx.fillStyle = 'blue';
     ctx.fillRect(current.x*cellSize+1, current.y*cellSize+1, cellSize-2, cellSize-2);
   }
+  alert("Путь найден :)");
 }
 }
 function start(){
