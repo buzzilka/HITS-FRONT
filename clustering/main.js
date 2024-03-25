@@ -37,12 +37,5 @@ function startAlg(){
     }
 }
 
-function clear() {
-    points.length = 0; 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    console.log("yes");
-}
-
-window.clear = clear;
 window.getClusterNums = getClusterNums;
 window.startAlg = startAlg;
