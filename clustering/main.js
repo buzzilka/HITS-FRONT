@@ -6,14 +6,6 @@ const points = [];
 let clusterCount = 3;
 let selectedColor = '#000000';
 
-window.addEventListener('resize', resizeCanvas);
-
-function resizeCanvas() {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-    cluster(clusterCount, points, canvas, ctx);
-}
-
 canvas.addEventListener('click', function(event) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -45,5 +37,12 @@ function startAlg(){
     }
 }
 
+function clear() {
+    points.length = 0; 
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    console.log("yes");
+}
+
+window.clear = clear;
 window.getClusterNums = getClusterNums;
 window.startAlg = startAlg;

@@ -28,7 +28,7 @@ function cluster(clusterCount, points, canvas, ctx) {
     }
     
     function distance(point1, point2) {
-        return Math.sqrt(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2));
+        return Math.sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2);
     }
     
     points.forEach(point => {
@@ -48,8 +48,11 @@ function cluster(clusterCount, points, canvas, ctx) {
     
     clusters.forEach(cluster => {
         if (cluster.points.length > 0) {
-            let sumX = cluster.points.reduce((acc, p) => acc + p.x, 0);
-            let sumY = cluster.points.reduce((acc, p) => acc + p.y, 0);
+            let sumX = 0, sumY = 0;
+            for (let point of cluster.points) {
+                sumX += point.x;
+                sumY += point.y;
+            }
             cluster.x = sumX / cluster.points.length;
             cluster.y = sumY / cluster.points.length;
         }
@@ -71,4 +74,4 @@ function cluster(clusterCount, points, canvas, ctx) {
     });
 }
 
-export {cluster};
+export { cluster };
