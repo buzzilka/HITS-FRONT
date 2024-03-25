@@ -20,6 +20,7 @@ function clear(){
     }
   }
 }
+
 function drawGrid(){
   ctx.beginPath();
   for (let i = 0; i <= num; i++) {//вертикали
@@ -33,6 +34,7 @@ function drawGrid(){
   ctx.strokeStyle = 'grey';
   ctx.stroke();
 }
+
 function generateLabyrinth(){
   var isUsed = new Array(num);//массив для генерации
   for (let i = 0; i < num; i++) {
@@ -41,6 +43,7 @@ function generateLabyrinth(){
       isUsed[i][j] = false;
     }
   }
+
   //выбор точки начала
   var x = Math.floor(Math.random() * num / 2) * 2;
   var y = Math.floor(Math.random() * num / 2) * 2;
@@ -66,7 +69,8 @@ function generateLabyrinth(){
     check.push({x: x + 2, y: y});
     isUsed[y][x+2]=true;
   }
- //пока есть элементы в массиве, выбрать один и убрать стены.
+
+ //пока есть элементы в массиве, выбрать один 
   while (check.length > 0) {
     var index = Math.floor(Math.random() * check.length);
     x = check[index].x;
@@ -75,6 +79,7 @@ function generateLabyrinth(){
     check.splice(index,1);
     currentFinish={x:x,y:y,type:cells[y][x]};//установка финиша
 
+    //и убрать стены
     var d = [0,1,2,3];
     while (d.length>0) {
       var rand = Math.floor(Math.random() * d.length);
@@ -96,6 +101,7 @@ function generateLabyrinth(){
       }
       d.splice(rand,1);
     }
+
     //добавление возможных точек перехода
     if (y - 2 >= 0 && cells[y-2][x]=="wall" && isUsed[y-2][x]!=true) {
       check.push({x: x, y: y-2});
@@ -115,6 +121,7 @@ function generateLabyrinth(){
     }
   }
 }
+
 function drawLabyrinth(){
   for (let y = 0; y < num; y++) {
     for (let x = 0; x < num; x++) {
@@ -125,6 +132,7 @@ function drawLabyrinth(){
     }
   }
 }
+
 function setDefaultStartFinish(){
   cells[num-2][num-1]="empty";//проход до финиша
   cells[0][1]="empty";//проход до старта
@@ -137,6 +145,7 @@ function setDefaultStartFinish(){
   currentFinish={x:num-1,y:num-1,type:cells[num-1][num-1]};
   cells[num-1][num-1]="finish";
 }
+
 function setStartFinish(){
   ctx.fillStyle = 'green';
   ctx.fillRect(currentStart.x*cellSize+1, currentStart.y*cellSize+1, cellSize-2, cellSize-2);
@@ -145,6 +154,7 @@ function setStartFinish(){
   ctx.fillRect(currentFinish.x*cellSize+1, currentFinish.y*cellSize+1, cellSize-2, cellSize-2);
   cells[currentFinish.y][currentFinish.x]="finish";
 }
+
 function create(){
   clear();
   drawGrid();
@@ -158,10 +168,10 @@ var change = document.getElementById('redact').value;
 function redact() {
   change = document.getElementById('redact').value;
 }
+
 var startFinish="startFinish";//для отмены стен
 canvas.addEventListener('click', function(event) {
-  //координаты клика
-  const rect = canvas.getBoundingClientRect();
+  const rect = canvas.getBoundingClientRect();  //координаты клика
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
   if (change=="walls"){
@@ -216,6 +226,7 @@ canvas.addEventListener('click', function(event) {
     cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="finish";  
   }
 });
+
 function heuristic(a, b){//Манхэттен
   return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
@@ -233,7 +244,7 @@ function compare(a, b) {
 function toCheck(x, y){
   return (x >= 0 && x < num && y >= 0 && y < num) ? true : false;
 }
-function aStar(){
+async function aStar(){
   var reachable = new Array; //клетки для проверки
   reachable.push({x:currentStart.x,y:currentStart.y,toStart:0,toFinish:0,startToFinish:0,parent:null});
   var explored = new Array; //проверенные клетки
@@ -243,56 +254,60 @@ function aStar(){
     current = reachable[0];//берём клетку с наименьшей суммарной дистанцией
     reachable.splice(0, 1);
     explored.push(current);
-    if (!(current.x == currentStart.x && current.y == currentStart.y) && !(current.x == currentFinish.x && current.y == currentFinish.y)) {
-      ctx.fillStyle = 'pink';
-      ctx.fillRect(current.x*cellSize+1, current.y*cellSize+1, cellSize-2, cellSize-2);
-    }
     if (current.x == currentFinish.x && current.y == currentFinish.y) { // нашли финиш
       break;
+    }
+    if (!(current.x == currentStart.x && current.y == currentStart.y) && !(current.x == currentFinish.x && current.y == currentFinish.y)) {
+      ctx.fillStyle = 'pink';
+      await new Promise(resolve => setTimeout(resolve, 10));
+      ctx.fillRect(current.x*cellSize+1, current.y*cellSize+1, cellSize-2, cellSize-2);
     }
     //проверить соседей текущей клетки
     let ways = [[1, 0], [0, 1], [-1, 0], [0, -1]];
     for (let i = 0; i < ways.length; i++) {
-      var newNeighbour = {x:null,y:null,toStart:0,toFinish:0,startToFinish:0,parent:null};
-      newNeighbour.x = current.x + ways[i][0];
-      newNeighbour.y = current.y +ways[i][1];
+      var neighbour = {x:null,y:null,toStart:0,toFinish:0,startToFinish:0,parent:null};
+      neighbour.x = current.x + ways[i][0];
+      neighbour.y = current.y +ways[i][1];
       // проверить соседа на нахождение в массивах
-      var neighbour = reachable.find(cell => (cell.x == newNeighbour.x && cell.y == newNeighbour.y));
-      var isUsed = explored.find(cell => (cell.x == newNeighbour.x && cell.y == newNeighbour.y));
-      if (toCheck(newNeighbour.x, newNeighbour.y) && cells[newNeighbour.y][newNeighbour.x] != "wall" && isUsed == null) {// если клетка не использована 
-        if (neighbour == null) {//и не находится в reachable просчитать дистанции
-          if(newNeighbour.x != currentFinish.x && newNeighbour.y != currentFinish.y){
+      var isReachable = reachable.find(cell => (cell.x == neighbour.x && cell.y == neighbour.y));
+      var isExplored = explored.find(cell => (cell.x == neighbour.x && cell.y == neighbour.y));
+      if (toCheck(neighbour.x, neighbour.y) && cells[neighbour.y][neighbour.x] != "wall" && isExplored == null) {// если клетка не использована 
+        if (isReachable == null) {//и не находится в reachable просчитать дистанции
+          if(neighbour.x != currentFinish.x && neighbour.y != currentFinish.y){
             ctx.fillStyle = 'pink';
-            ctx.fillRect(newNeighbour.x*cellSize+1, newNeighbour.y*cellSize+1, cellSize-2, cellSize-2); 
+            await new Promise(resolve => setTimeout(resolve, 10));
+            ctx.fillRect(neighbour.x*cellSize+1, neighbour.y*cellSize+1, cellSize-2, cellSize-2); 
           }
-          newNeighbour.toStart = current.toStart + 1;
-          newNeighbour.toFinish = heuristic(newNeighbour, currentFinish);
-          newNeighbour.startToFinish = newNeighbour.toStart + newNeighbour.toFinish;
-          newNeighbour.parent = current;
-          reachable.push(newNeighbour);
+          neighbour.toStart = current.toStart + 1;
+          neighbour.toFinish = heuristic(neighbour, currentFinish);
+          neighbour.startToFinish = neighbour.toStart + neighbour.toFinish;
+          neighbour.parent = current;
+          reachable.push(neighbour);
         } 
         else {// если клетка находится в reachable поменять дистанцию до старта если надо
-          if (neighbour.startToFinish >= current.startToFinish + 1) {
-            reachable[reachable.indexOf(neighbour)].toStart = current.toStart + 1;
-            reachable[reachable.indexOf(neighbour)].parent = current;
+          if (isReachable.startToFinish >= current.startToFinish + 1) {
+            reachable[reachable.indexOf(isReachable)].toStart = current.toStart + 1;
+            reachable[reachable.indexOf(isReachable)].parent = current;
           }
         }
       }
     }
   }
-// не найден финиш
-if (current.x != currentFinish.x && current.y != currentFinish.y) {
+
+if (current.x != currentFinish.x && current.y != currentFinish.y) {//не найден финиш
     alert("Пути нет :(");
 } 
 else {//рисуем путь
   current=current.parent;
   for(;current.parent != null; current = current.parent) {
     ctx.fillStyle = 'blue';
+    await new Promise(resolve => setTimeout(resolve, 10));
     ctx.fillRect(current.x*cellSize+1, current.y*cellSize+1, cellSize-2, cellSize-2);
   }
-  alert("Путь найден :)");
+  setTimeout(() => alert("Путь найден :)"), 100);
 }
 }
+
 function start(){
   if (cells[currentStart.y][currentStart.x]!="start" && cells[currentFinish.y][currentFinish.x]!="finish"){
   alert("please, set start and finish");
