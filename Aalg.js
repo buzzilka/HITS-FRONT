@@ -227,24 +227,21 @@ canvas.addEventListener('click', function(event) {
   }
 });
 
-function heuristic(a, b){//Манхэттен
-  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-}
-function compare(a, b) {
-  if (a.startToFinish > b.startToFinish){
-      return 1;
-  }
-  else if (a.startToFinish < b.startToFinish){
-      return -1;
-  }
-  else{
-      return 0;
-  }
-}
-function toCheck(x, y){
-  return (x >= 0 && x < num && y >= 0 && y < num) ? true : false;
-}
 async function aStar(){
+  function heuristic(a, b){//Манхэттен
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+  }
+  function compare(a, b) {
+    if (a.startToFinish > b.startToFinish){
+        return 1;
+    }
+    else if (a.startToFinish < b.startToFinish){
+        return -1;
+    }
+    else{
+        return 0;
+    }
+  }
   var reachable = new Array; //клетки для проверки
   reachable.push({x:currentStart.x,y:currentStart.y,toStart:0,toFinish:0,startToFinish:0,parent:null});
   var explored = new Array; //проверенные клетки
@@ -257,37 +254,39 @@ async function aStar(){
     if (current.x == currentFinish.x && current.y == currentFinish.y) { // нашли финиш
       break;
     }
-    if (!(current.x == currentStart.x && current.y == currentStart.y) && !(current.x == currentFinish.x && current.y == currentFinish.y)) {
+    if (current.x != currentStart.x && current.y != currentStart.y && current.x != currentFinish.x && current.y != currentFinish.y) {
       ctx.fillStyle = 'pink';
       await new Promise(resolve => setTimeout(resolve, 10));
       ctx.fillRect(current.x*cellSize+1, current.y*cellSize+1, cellSize-2, cellSize-2);
     }
     //проверить соседей текущей клетки
-    let ways = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+    let ways = [{x:1, y:0}, {x:0, y:1}, {x:-1, y:0}, {x:0, y:-1}];
     for (let i = 0; i < ways.length; i++) {
       var neighbour = {x:null,y:null,toStart:0,toFinish:0,startToFinish:0,parent:null};
-      neighbour.x = current.x + ways[i][0];
-      neighbour.y = current.y +ways[i][1];
+      neighbour.x = current.x + ways[i].x;
+      neighbour.y = current.y +ways[i].y;
       // проверить соседа на нахождение в массивах
       var isReachable = reachable.find(cell => (cell.x == neighbour.x && cell.y == neighbour.y));
       var isExplored = explored.find(cell => (cell.x == neighbour.x && cell.y == neighbour.y));
-      if (toCheck(neighbour.x, neighbour.y) && cells[neighbour.y][neighbour.x] != "wall" && isExplored == null) {// если клетка не использована 
-        if (isReachable == null) {//и не находится в reachable просчитать дистанции
-          if(neighbour.x != currentFinish.x && neighbour.y != currentFinish.y){
-            ctx.fillStyle = 'pink';
-            await new Promise(resolve => setTimeout(resolve, 10));
-            ctx.fillRect(neighbour.x*cellSize+1, neighbour.y*cellSize+1, cellSize-2, cellSize-2); 
-          }
-          neighbour.toStart = current.toStart + 1;
-          neighbour.toFinish = heuristic(neighbour, currentFinish);
-          neighbour.startToFinish = neighbour.toStart + neighbour.toFinish;
-          neighbour.parent = current;
-          reachable.push(neighbour);
-        } 
-        else {// если клетка находится в reachable поменять дистанцию до старта если надо
-          if (isReachable.startToFinish >= current.startToFinish + 1) {
-            reachable[reachable.indexOf(isReachable)].toStart = current.toStart + 1;
-            reachable[reachable.indexOf(isReachable)].parent = current;
+      if (neighbour.x >= 0 && neighbour.x < num && neighbour.y >= 0 && neighbour.y < num ){//если клетка существует
+        if (cells[neighbour.y][neighbour.x] != "wall" && isExplored == null) {//и пустая и не использована 
+          if (isReachable == null) {//и не находится в reachable просчитать дистанции
+            if(neighbour.x != currentFinish.x && neighbour.y != currentFinish.y){
+              ctx.fillStyle = 'pink';
+              await new Promise(resolve => setTimeout(resolve, 10));
+              ctx.fillRect(neighbour.x*cellSize+1, neighbour.y*cellSize+1, cellSize-2, cellSize-2); 
+            }
+            neighbour.toStart = current.toStart + 1;
+            neighbour.toFinish = heuristic(neighbour, currentFinish);
+            neighbour.startToFinish = neighbour.toStart + neighbour.toFinish;
+            neighbour.parent = current;
+            reachable.push(neighbour);
+          } 
+          else {// если клетка находится в reachable изменить дистанцию до старта если нужно
+            if (isReachable.startToFinish >= current.startToFinish + 1) {
+              reachable[reachable.indexOf(isReachable)].toStart = current.toStart + 1;
+              reachable[reachable.indexOf(isReachable)].parent = current;
+            }
           }
         }
       }
@@ -300,7 +299,7 @@ if (current.x != currentFinish.x && current.y != currentFinish.y) {//не най
 else {//рисуем путь
   current=current.parent;
   for(;current.parent != null; current = current.parent) {
-    ctx.fillStyle = 'blue';
+    ctx.fillStyle = 'SkyBlue';
     await new Promise(resolve => setTimeout(resolve, 10));
     ctx.fillRect(current.x*cellSize+1, current.y*cellSize+1, cellSize-2, cellSize-2);
   }
