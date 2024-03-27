@@ -262,7 +262,7 @@ async function aStar(){
             if(neighbour.x != currentFinish.x || neighbour.y != currentFinish.y){
               ctx.fillStyle = 'pink';
               await new Promise(resolve => setTimeout(resolve, 10));
-              ctx.fillRect(neighbour.x*cellSize+1, neighbour.y*cellSize+1, cellSize-2, cellSize-2); 
+              ctx.fillRect(neighbour.x*cellSize+1, neighbour.y*cellSize+1, cellSize-2, cellSize-2);
             }
             neighbour.toStart = current.toStart + 1;
             neighbour.toFinish = heuristic(neighbour, currentFinish);
@@ -305,5 +305,6 @@ function start(){
   else if (cells[currentFinish.y][currentFinish.x]!="finish"){
     alert("please, set finish");
   }
+  drawLabyrinth();
   aStar();
 }
