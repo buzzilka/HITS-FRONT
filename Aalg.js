@@ -36,6 +36,25 @@ function drawGrid(){
 }
 
 function generateLabyrinth(){
+  function toCheck(x,y,check,isUsed)
+  {
+    if (y - 2 >= 0 && cells[y-2][x]=="wall" && isUsed[y-2][x]!=true) {
+      check.push({x: x, y: y-2});
+      isUsed[y-2][x]=true;
+    }
+    if (y + 2 < num && cells[y+2][x]=="wall" && isUsed[y+2][x]!=true) {
+      check.push({x: x, y: y+2});
+      isUsed[y+2][x]=true;
+    }
+    if (x - 2 >= 0 && cells[y][x-2]=="wall" && isUsed[y][x-2]!=true) {
+      check.push({x: x - 2, y: y});
+      isUsed[y][x-2]=true;
+    }
+    if (x + 2 < num && cells[y][x+2]=="wall" && isUsed[y][x+2]!=true) {
+      check.push({x: x + 2, y: y});
+      isUsed[y][x+2]=true;
+    }
+  }
   var isUsed = new Array(num);//массив для генерации
   for (let i = 0; i < num; i++) {
     isUsed[i] = new Array(num);
@@ -53,22 +72,7 @@ function generateLabyrinth(){
 
   //добавление возможных точек перехода
   var check = [];
-  if (y - 2 >= 0) {
-    check.push({x: x, y: y-2});
-    isUsed[y-2][x]=true;
-  }
-  if (y + 2 < num) {
-    check.push({x: x, y: y+2});
-    isUsed[y+2][x]=true;
-  }
-  if (x - 2 >= 0) {
-    check.push({x: x - 2, y: y});
-    isUsed[y][x-2]=true;
-  }
-  if (x + 2 < num) {
-    check.push({x: x + 2, y: y});
-    isUsed[y][x+2]=true;
-  }
+  toCheck(x,y,check,isUsed);
 
  //пока есть элементы в массиве, выбрать один 
   while (check.length > 0) {
@@ -103,22 +107,7 @@ function generateLabyrinth(){
     }
 
     //добавление возможных точек перехода
-    if (y - 2 >= 0 && cells[y-2][x]=="wall" && isUsed[y-2][x]!=true) {
-      check.push({x: x, y: y-2});
-      isUsed[y-2][x]=true;
-    }
-    if (y + 2 < num && cells[y+2][x]=="wall" && isUsed[y+2][x]!=true) {
-      check.push({x: x, y: y+2});
-      isUsed[y+2][x]=true;
-    }
-    if (x - 2 >= 0 && cells[y][x-2]=="wall" && isUsed[y][x-2]!=true) {
-      check.push({x: x - 2, y: y});
-      isUsed[y][x-2]=true;
-    }
-    if (x + 2 < num && cells[y][x+2]=="wall" && isUsed[y][x+2]!=true) {
-      check.push({x: x + 2, y: y});
-      isUsed[y][x+2]=true;
-    }
+    toCheck(x,y,check,isUsed);
   }
 }
 
@@ -254,7 +243,7 @@ async function aStar(){
     if (current.x == currentFinish.x && current.y == currentFinish.y) { // нашли финиш
       break;
     }
-    if (current.x != currentStart.x && current.y != currentStart.y && current.x != currentFinish.x && current.y != currentFinish.y) {
+    if ((current.x != currentStart.x || current.y != currentStart.y) && (current.x != currentFinish.x || current.y != currentFinish.y)) {
       ctx.fillStyle = 'pink';
       await new Promise(resolve => setTimeout(resolve, 10));
       ctx.fillRect(current.x*cellSize+1, current.y*cellSize+1, cellSize-2, cellSize-2);
@@ -265,13 +254,12 @@ async function aStar(){
       var neighbour = {x:null,y:null,toStart:0,toFinish:0,startToFinish:0,parent:null};
       neighbour.x = current.x + ways[i].x;
       neighbour.y = current.y +ways[i].y;
-      // проверить соседа на нахождение в массивах
       var isReachable = reachable.find(cell => (cell.x == neighbour.x && cell.y == neighbour.y));
       var isExplored = explored.find(cell => (cell.x == neighbour.x && cell.y == neighbour.y));
       if (neighbour.x >= 0 && neighbour.x < num && neighbour.y >= 0 && neighbour.y < num ){//если клетка существует
         if (cells[neighbour.y][neighbour.x] != "wall" && isExplored == null) {//и пустая и не использована 
           if (isReachable == null) {//и не находится в reachable просчитать дистанции
-            if(neighbour.x != currentFinish.x && neighbour.y != currentFinish.y){
+            if(neighbour.x != currentFinish.x || neighbour.y != currentFinish.y){
               ctx.fillStyle = 'pink';
               await new Promise(resolve => setTimeout(resolve, 10));
               ctx.fillRect(neighbour.x*cellSize+1, neighbour.y*cellSize+1, cellSize-2, cellSize-2); 
@@ -293,10 +281,7 @@ async function aStar(){
     }
   }
 
-if (current.x != currentFinish.x && current.y != currentFinish.y) {//не найден финиш
-    alert("Пути нет :(");
-} 
-else {//рисуем путь
+if (current.x == currentFinish.x && current.y == currentFinish.y) {//если найден финеш рисуем путь
   current=current.parent;
   for(;current.parent != null; current = current.parent) {
     ctx.fillStyle = 'SkyBlue';
@@ -304,6 +289,9 @@ else {//рисуем путь
     ctx.fillRect(current.x*cellSize+1, current.y*cellSize+1, cellSize-2, cellSize-2);
   }
   setTimeout(() => alert("Путь найден :)"), 100);
+} 
+else {
+  alert("Пути нет :(");
 }
 }
 
