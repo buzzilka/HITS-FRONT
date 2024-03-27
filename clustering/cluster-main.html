@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            background-color: rgba(132, 142, 156, 0.3);
+            height: 600px;
+            width: 1000px;
+            cursor: pointer;
+            border: 3px solid gray;
+            display: block;
+            margin: 0 auto;
+        }
+
+        button {
+            cursor: pointer;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1><center>Алгоритм кластеризации</center></h1>
+    <canvas id="canvas" width="1000" height="600"></canvas>
+    <input type="number" id="clusterNums" />
+    <button onclick="getClusterNums()">Количество кластеров</button>
+    <button onclick="startAlg()">Запустить алгоритм</button>
+    <button onclick="clearCanvas()">Очистить</button> 
+    <script src="cluster-main.js" type="module"></script>
+</body>
+</html>
