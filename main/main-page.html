@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="main-page.css">
+</head>
+<body>
+    <ul class="menu">
+        <div class="menuToggle"><ion-icon name="add-circle-outline"></ion-icon></div>
+        <li style="--i:0;--clr:#ff2972;">
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"><ion-icon name="school-outline"></ion-icon></a>
+        </li>
+        <li style="--i:1;--clr:#fee800;">
+            <a href="#"><ion-icon name="accessibility-outline"></ion-icon></a>
+        </li>
+        <li style="--i:2;--clr:#04fc43;">
+            <a href="#"><img class='img' src="./pictures/path.png" width="50px"/></a>
+        </li>
+        <li style="--i:3;--clr:#fe00f1;">
+            <a href="#"><img class='img' src="./pictures/ant.png" width="50px"/></a>
+        </li>
+        <li style="--i:4;--clr:#00b0fe;">
+            <a href="#"><img class='img' src="./pictures/brain.png" width="50px"/></a>
+        </li>
+        <li style="--i:5;--clr:#fea600;">
+            <a href="#"><img class='img' src="./pictures/clust.png" width="40px"/></a>
+        </li>
+        <li style="--i:6;--clr:#a529ff;">
+            <a href="#"><img class='img' src="./pictures/gen.png" width="50px"/></a>
+        </li>
+        <li style="--i:7;--clr:#01bdab;">
+            <a href="#"><img class='img' src="./pictures/tree.png" width="50px"/></a>
+        </li>
+    </ul>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script>
+        let menuToggle =document.querySelector('.menuToggle');
+        let menu = document.querySelector('.menu');
+        menuToggle.onclick = function(){
+            menu.classList.toggle('active');
+        }
+    </script>
+</body>
+
+</html>
