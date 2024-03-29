@@ -188,7 +188,7 @@ function geneticAlgorythm()
 
 document.getElementById('first').onclick = start;
 
-function start() {
+async function start() {
     sizeOfPopulation();
 
     for (let i = 0; i < populationCount; i++)
@@ -210,6 +210,7 @@ function start() {
             ctx.moveTo(bestPath[j].x, bestPath[j].y);
             ctx.lineTo(bestPath[j + 1].x, bestPath[j + 1].y);
             ctx.stroke();
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
         
         joinPoints();
@@ -221,5 +222,6 @@ function start() {
         ctx.moveTo(bestPath[j].x, bestPath[j].y);
         ctx.lineTo(bestPath[j + 1].x, bestPath[j + 1].y);
         ctx.stroke();
+        await new Promise(resolve => setTimeout(resolve, 100));
     }
 }
