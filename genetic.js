@@ -1,7 +1,7 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 ctx.font = "14px serif";
-const points = [];
+let points = [];
 let path = [];
 let population = [];
 let bestPath = [];
@@ -17,7 +17,7 @@ canvas.addEventListener('click', function(event) {
     points.push({ x, y });
 
     drawPoints();
-    joinPoints();
+    joinPoints('black');
     drawDistance();
 });
 
@@ -64,9 +64,9 @@ function drawPoints() {
     });
 }
 
-function joinPoints() {
+function joinPoints(color) {
     ctx.beginPath();
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = color;
     for(let i = 0; i < points.length; i++)
     {
         for(let j = 0; j < points.length; j++)
@@ -91,7 +91,7 @@ function toBack() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     points.length--;
     drawPoints();
-    joinPoints();
+    joinPoints('black');
     drawDistance();
 }
 
@@ -198,30 +198,26 @@ async function start() {
         population.push({osob: f, length: sumDistance(f)});
     }
     
-    for (let i = 0; i < populationCount; i++)
-    {
+    for (let i = 0; i < populationCount; i++) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawPoints();
+        drawDistance();
+        joinPoints('grey');
+
+        console.log('hui');
+
         geneticAlgorythm();
 
         bestPath = population[0].osob;
         
         ctx.beginPath();
         ctx.strokeStyle = 'red';
-        for (let j = 0; j < bestPath.length; j++) {
+        for (let j = 0; j < bestPath.length - 1; j++) {
             ctx.moveTo(bestPath[j].x, bestPath[j].y);
             ctx.lineTo(bestPath[j + 1].x, bestPath[j + 1].y);
             ctx.stroke();
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise(resolve => setTimeout(resolve, 300));
         }
-        
-        joinPoints();
-    }
-    bestPath = population[0].osob;
-    ctx.beginPath();
-    ctx.strokeStyle = 'red';
-    for (let j = 0; j < bestPath.length; j++) {
-        ctx.moveTo(bestPath[j].x, bestPath[j].y);
-        ctx.lineTo(bestPath[j + 1].x, bestPath[j + 1].y);
-        ctx.stroke();
-        await new Promise(resolve => setTimeout(resolve, 100));
     }
 }
