@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <title>Дерево решений</title>
+  </head>
+
+<body>
+    <h1><center>Дерево решений</center></h1>
+    <ul class="Container">
+      <li class="Node IsRoot ExpandOpen">
+        <div class="Expand"></div>
+          <div class="Content"></div>
+          <ul class="Container">
+            <li class="Node ExpandLeaf">
+              <div class="Expand"></div>
+              <div class="Content"></div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    <div>Загрузить обучающую выборку</div>
+    <input id = "fileInput" type="file" accept=".CSV">
+    <p></p>
+    <button id = "buildDecisionTree" onclick="buildDecisionTree()">Построить дерево</button>
+    <button id = "optimizeDecisionTree" onclick="optimizeDecisionTree()">Оптимизировать размер дерева</button>
+    <p></p>
+    <input type="text" id="textInput" placeholder="Ввод данных">
+    <button id = "bypassDecisionTree" onclick="bypassDecisionTree()">Обход по дереву</button>
+    <script src="decisionTree.js"></script>
+</body>
+</html>
