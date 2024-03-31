@@ -218,13 +218,13 @@ canvas.addEventListener('click', function(event) {
 
 async function aStar(){
   function heuristic(a, b){//Манхэттен
-    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    return Math.abs(b.x - a.x) + Math.abs(b.y - a.y);
   }
   function compare(a, b) {
-    if (a.startToFinish > b.startToFinish){
+    if (a.allPath > b.allPath){
         return 1;
     }
-    else if (a.startToFinish < b.startToFinish){
+    else if (a.allPath < b.allPath){
         return -1;
     }
     else{
@@ -232,13 +232,12 @@ async function aStar(){
     }
   }
   var reachable = new Array; //клетки для проверки
-  reachable.push({x:currentStart.x,y:currentStart.y,toStart:0,toFinish:0,startToFinish:0,parent:null});
+  reachable.push({x:currentStart.x,y:currentStart.y,toStart:0,allPath:0,parent:null});
   var explored = new Array; //проверенные клетки
   var current;
   while (reachable.length > 0) {//пока есть клетки для проверки
     reachable.sort(compare);
-    current = reachable[0];//берём клетку с наименьшей суммарной дистанцией
-    reachable.splice(0, 1);
+    current = reachable.shift();//берём клетку с наименьшей суммарной дистанцией
     explored.push(current);
     if (current.x == currentFinish.x && current.y == currentFinish.y) { // нашли финиш
       break;
@@ -251,9 +250,7 @@ async function aStar(){
     //проверить соседей текущей клетки
     let ways = [{x:1, y:0}, {x:0, y:1}, {x:-1, y:0}, {x:0, y:-1}];
     for (let i = 0; i < ways.length; i++) {
-      var neighbour = {x:null,y:null,toStart:0,toFinish:0,startToFinish:0,parent:null};
-      neighbour.x = current.x + ways[i].x;
-      neighbour.y = current.y +ways[i].y;
+      var neighbour = {x:current.x + ways[i].x, y:current.y + ways[i].y, toStart:0, allPath:0, parent:null};
       var isReachable = reachable.find(cell => (cell.x == neighbour.x && cell.y == neighbour.y));
       var isExplored = explored.find(cell => (cell.x == neighbour.x && cell.y == neighbour.y));
       if (neighbour.x >= 0 && neighbour.x < num && neighbour.y >= 0 && neighbour.y < num ){//если клетка существует
@@ -265,13 +262,12 @@ async function aStar(){
               ctx.fillRect(neighbour.x*cellSize+1, neighbour.y*cellSize+1, cellSize-2, cellSize-2);
             }
             neighbour.toStart = current.toStart + 1;
-            neighbour.toFinish = heuristic(neighbour, currentFinish);
-            neighbour.startToFinish = neighbour.toStart + neighbour.toFinish;
+            neighbour.allPath = neighbour.toStart + heuristic(neighbour, currentFinish);
             neighbour.parent = current;
             reachable.push(neighbour);
           } 
           else {// если клетка находится в reachable изменить дистанцию до старта если нужно
-            if (isReachable.startToFinish >= current.startToFinish + 1) {
+            if (isReachable.allPath >= current.allPath + 1) {
               reachable[reachable.indexOf(isReachable)].toStart = current.toStart + 1;
               reachable[reachable.indexOf(isReachable)].parent = current;
             }
