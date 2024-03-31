@@ -6,7 +6,7 @@ let path = [];
 let population = [];
 let bestPath = [];
 let populationCount = 1;
-const probabilityMutation = 70;
+const probabilityMutation = 90;
 
 
 canvas.addEventListener('click', function(event) {
@@ -50,18 +50,31 @@ function sumDistance(arr) {
     for (let i = 0, j = 1; j < arr.length; i++, j++) {
         sum += calcDistance(arr[i], arr[j]);
     }
+    sum += calcDistance(arr[0], arr[arr.length - 1]);
     return sum;
 }
 
 function drawPoints() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.fillStyle = 'black';
     points.forEach(point => {
         ctx.beginPath();
         ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
         ctx.fill();
     });
+}
+
+async function drawPath(arr) {
+    ctx.strokeStyle = 'red';
+    ctx.beginPath();
+    for (let j = 0; j < arr.length - 1; j++) {
+        ctx.moveTo(arr[j].x, arr[j].y);
+        ctx.lineTo(arr[j + 1].x, arr[j + 1].y);
+        ctx.stroke();
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    ctx.moveTo(arr[0].x, arr[0].y);
+    ctx.lineTo(arr[arr.length - 1].x, arr[arr.length - 1].y);
+    ctx.stroke();
 }
 
 function joinPoints(color) {
@@ -96,21 +109,23 @@ function toBack() {
 }
 
 function getRandom() {
-    for (let i = points.length - 1; i >= 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-
+    for (let i = 0; i < points.length; i++) {
+        path.push(points[i]);
+    }
+    for (let i = 0; i < points.length; i++) {
+        let j = i + Math.floor(Math.random() * (points.length - i));
         [path[i], path[j]] = [path[j], path[i]];
     }
 }
 
 function randomPath() {
-    path = points;
+    path = [];
     getRandom();
     return path;
 }
 
 function sizeOfPopulation() {
-    for (let i = 1; i <= points.length; i++) {
+    for (let i = 1; i < points.length; i++) {
         populationCount *= i;
     }
 }
@@ -119,49 +134,39 @@ function sex() {
     let firstIndex = Math.floor(Math.random() * (populationCount - 1));
     let secondIndex = Math.floor(Math.random() * (populationCount - 1));
 
+    if (firstIndex == secondIndex) {
+        firstIndex = Math.floor(Math.random() * (populationCount - 1));
+    }
+
     let mom = population[firstIndex].osob;
     let dad = population[secondIndex].osob;
 
-    let firstChild = [];
-    let secondChild = [];
+    let child = [];
 
-    let firstGens = new Set();
-    let secondGens = new Set();
+    let gens = new Set();
+    let countOfGens =  Math.floor(Math.random() * (mom.length));
 
-    for (let i = 0; i < 2; i++) {
-        firstChild.push(mom[i]);
-        firstGens.add(mom[i]);
-
-        secondChild.push(dad[i]);
-        secondGens.add(dad[i]);
+    for (let i = 0; i < countOfGens; i++) {
+        child.push(mom[i]);
+        gens.add(mom[i]);
     }
-    for (let i = 2; i < points.length; i++)
+    for (let i = countOfGens; i < points.length; i++)
     {
-        if (!firstGens.has(dad[i])) {
-            firstChild.push(dad[i]);
-            firstGens.add(dad[i]);
-        }
-        if (!secondGens.has(mom[i])) {
-            secondChild.push(mom[i]);
-            secondGens.add(mom[i]);
+        if (!gens.has(dad[i])) {
+            child.push(dad[i]);
+            gens.add(dad[i]);
         }
     }
-    for (let i = 2; i < points.length; i++) {
-        if (mom.length != firstChild.length && !(firstGens.has(mom[i]))) {
-            firstChild.push(mom[i]);
-            firstGens.add(mom[i]);
-        }
-        if (mom.length != secondChild.length && !(secondGens.has(dad[i]))) {
-            secondChild.push(dad[i]);
-            secondGens.add(dad[i]);
+    for (let i = countOfGens; i < points.length; i++) {
+        if (mom.length != child.length && !(gens.has(mom[i]))) {
+            child.push(mom[i]);
+            gens.add(mom[i]);
         }
     }
+    
+    child = mutation(child);
 
-    mutation(firstChild);
-    mutation(secondChild);
-
-    population.push({osob: firstChild, length: sumDistance(firstChild)});
-    population.push({osob: secondChild, length: sumDistance(secondChild)});
+    population.push({osob: child, length: sumDistance(child)});
 }
 
 
@@ -172,23 +177,32 @@ function sorting() {
 function mutation(child) {
     let percentOfMutation = Math.floor(Math.random() * (100));
     if (percentOfMutation < probabilityMutation) {
-        let firstIndex = Math.floor(Math.random() * (points.length - 1));
-        let secondIndex = Math.floor(Math.random() * (points.length - 1));
+        let firstIndex = Math.floor(Math.random() * (child.length));
+        let secondIndex = Math.floor(Math.random() * (child.length));
 
-        [child[firstIndex], child[secondIndex]] = [child[secondIndex], child[firstIndex]];
+        if (firstIndex != secondIndex) {
+            [child[firstIndex], child[secondIndex]] = [child[secondIndex], child[firstIndex]];
+        }
+        else {
+            firstIndex = Math.floor(Math.random() * (child.length));
+            [child[firstIndex], child[secondIndex]] = [child[secondIndex], child[firstIndex]];
+        }
     }
+    return child;
 }
 
 function geneticAlgorythm()
 {
     sex();
     sorting();
-    population.size = population.size - 2;
+    population.pop();
 }
 
 document.getElementById('first').onclick = start;
 
 async function start() {
+    populationCount = 1;
+    population.length = 0;
     sizeOfPopulation();
 
     for (let i = 0; i < populationCount; i++)
@@ -199,25 +213,36 @@ async function start() {
     }
     
     for (let i = 0; i < populationCount; i++) {
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise(resolve => setTimeout(resolve, 100));
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawPoints();
         drawDistance();
         joinPoints('grey');
-
-        console.log('hui');
+        drawPoints();
 
         geneticAlgorythm();
 
-        bestPath = population[0].osob;
-        
-        ctx.beginPath();
+        let randomIndex = Math.floor(Math.random() * (population.length - 1));
+        bestPath = population[randomIndex].osob;
+
         ctx.strokeStyle = 'red';
+        ctx.beginPath();
         for (let j = 0; j < bestPath.length - 1; j++) {
             ctx.moveTo(bestPath[j].x, bestPath[j].y);
             ctx.lineTo(bestPath[j + 1].x, bestPath[j + 1].y);
             ctx.stroke();
-            await new Promise(resolve => setTimeout(resolve, 300));
+            drawPoints();
         }
+        ctx.moveTo(bestPath[0].x, bestPath[0].y);
+        ctx.lineTo(bestPath[bestPath.length - 1].x, bestPath[bestPath.length - 1].y);
+        ctx.stroke();
+        drawPoints();
     }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawDistance();
+    joinPoints('grey');
+    drawPoints();
+
+    bestPath = population[0].osob;
+
+    drawPath(bestPath);
 }
