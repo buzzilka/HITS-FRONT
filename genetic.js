@@ -75,6 +75,7 @@ async function drawPath(arr) {
     ctx.moveTo(arr[0].x, arr[0].y);
     ctx.lineTo(arr[arr.length - 1].x, arr[arr.length - 1].y);
     ctx.stroke();
+    drawPoints();
 }
 
 function joinPoints(color) {
