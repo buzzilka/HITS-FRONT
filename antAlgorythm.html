@@ -12,9 +12,9 @@
     }
 
     canvas {
-        background-color: rgba(132,142,156,0.3);
-        height: 650px;
-        width: 650px;
+        background-color: rgb(4, 22, 48);
+        height: 850px;
+        width: 1550px;
         cursor: pointer;
         border: 3px solid gray;
         
@@ -27,11 +27,13 @@
 </style>
 <body>
     <h1><center>Муравьиный алгоритм</center></h1>
-    <canvas id="canvas" width="650" height="650"></canvas>
+    <center><canvas id="canvas" width="1550" height="850"></canvas><center>
     <p></p>
     <button id="first" onclick="start()">Старт</button>
     <button id="second" onclick="clear()">Очистить</button>
-    <button id="third" onclick="toBack()">Ctrl+z</button>
+    <button id="third">Добавить стены</button>
+    <button id="fourth">Удалить стены</button>
+    <button id="fiveth">Добавить еду</button>
     <script src="antAlgorytm.js" type="module"></script>
 </body>
 </html>

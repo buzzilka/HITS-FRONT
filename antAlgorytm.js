@@ -75,26 +75,8 @@ function clear() {
     distances.length = 0;
 }
 
-document.getElementById('third').onclick = toBack;
-
-function toBack() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    points.length--;
-    distances.length--;
-    drawPoints();
-    joinPoints();
-    drawDistance();
-}
-
 function antAlgorythm()
 {
-    let bestDistance = 0;
-    let countAnts = points.length;
-    let q = 0;
-    for(let i = 0; i < distances.length; i++)
-    {
-        q = (q+distances[i])/(i+1);
-    }
 
 }
 
