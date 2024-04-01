@@ -7,12 +7,10 @@
     <style>
         canvas {
             background-color: rgba(132, 142, 156, 0.3);
-            height: 500px;
-            width: 500px;
             cursor: pointer;
             border: 3px solid gray;
             display: block;
-            margin: 0 auto;
+            box-sizing: border-box;
         }
         button {
         cursor: pointer;
@@ -22,11 +20,26 @@
         }
     </style>
 </head>
-<body>
-    <h1><center>Нейронная сеть</center></h1>
-    <canvas id="canvas" width="500" height="500"></canvas>
-    <button onclick="" >Угадать число</button>
-    <button onclick="clearCanvas()">Очистить</button>
-    <script src="nnetwork.js"></script>
+<body id="body">
+    <div id="root" style="display: flex; justify-content: center; flex-direction: column; gap: 16px; align-content: center;">
+        <h1 style="text-align: center;">Нейронная сеть</h1>
+        <div  style="display: flex; justify-content: center; align-content: center; width: 100%;">  
+            <canvas id="canvas"></canvas>
+        </div>
+        <script >
+            const canvas = document.getElementById("canvas");
+            function onResize(){
+                canvas.height=504;
+                canvas.width=504;
+            }
+            window.addEventListener("resize", onResize);
+            onResize();
+        </script>
+        <button onclick="">Угадать число</button>
+        <button onclick="clearCanvas()">Очистить</button>
+        <label class="brushSizeLabel">Размер кисти: </label>
+        <input id="brushSize" type="range" min="5" max="30" value="13"/>
+        <script src="nnetwork.js"></script>
+    </div>
 </body>
 </html>
