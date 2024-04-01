@@ -126,9 +126,7 @@ function randomPath() {
 }
 
 function sizeOfPopulation() {
-    for (let i = 1; i < points.length; i++) {
-        populationCount *= i;
-    }
+    populationCount = 10 * points.length;
 }
 
 function sex() {
@@ -238,6 +236,9 @@ async function start() {
         ctx.stroke();
         drawPoints();
     }
+
+    console.log(population);
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawDistance();
     joinPoints('grey');
