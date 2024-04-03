@@ -6,8 +6,13 @@ var currentStart, currentFinish;
 
 function input(){
   num = document.getElementById('number-in').value;
-  cellSize = canvas.width / num;
-  create();
+  if (num==""){
+    alert("Введите число")
+  }
+  else{
+    cellSize = canvas.width / num;
+    create();
+  }
 }
 
 function clear(){
@@ -292,15 +297,20 @@ else {
 }
 
 function start(){
-  if (cells[currentStart.y][currentStart.x]!="start" && cells[currentFinish.y][currentFinish.x]!="finish"){
-  alert("please, set start and finish");
+  if (num==null){
+    alert("Введите число")
   }
-  else if (cells[currentStart.y][currentStart.x]!="start"){
-    alert("please, set start");
+  else{
+    if (cells[currentStart.y][currentStart.x]!="start" && cells[currentFinish.y][currentFinish.x]!="finish"){
+    alert("please, set start and finish");
+    }
+    else if (cells[currentStart.y][currentStart.x]!="start"){
+      alert("please, set start");
+    }
+    else if (cells[currentFinish.y][currentFinish.x]!="finish"){
+      alert("please, set finish");
+    }
+    drawLabyrinth();
+    aStar();
   }
-  else if (cells[currentFinish.y][currentFinish.x]!="finish"){
-    alert("please, set finish");
-  }
-  drawLabyrinth();
-  aStar();
 }
