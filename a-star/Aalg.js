@@ -165,59 +165,64 @@ function redact() {
 
 var startFinish="startFinish";//для отмены стен
 canvas.addEventListener('click', function(event) {
-  const rect = canvas.getBoundingClientRect();  //координаты клика
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-  if (change=="walls"){
-    if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="wall"){
-      if (Math.floor(y/cellSize)==currentStart.y && Math.floor(x/cellSize)==currentStart.x && startFinish!="finish"){
-        ctx.fillStyle = 'green';
-        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="start";
-      }
-      else if (Math.floor(y/cellSize)==currentFinish.y && Math.floor(x/cellSize)==currentFinish.x  && startFinish!="start"){
-        ctx.fillStyle = 'red';
-        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="finish";
+  if (num==null){
+    alert("Создайте лабиринт")
+  }
+  else{
+    const rect = canvas.getBoundingClientRect();  //координаты клика
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    if (change=="walls"){
+      if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="wall"){
+        if (Math.floor(y/cellSize)==currentStart.y && Math.floor(x/cellSize)==currentStart.x && startFinish!="finish"){
+          ctx.fillStyle = 'green';
+          cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="start";
+        }
+        else if (Math.floor(y/cellSize)==currentFinish.y && Math.floor(x/cellSize)==currentFinish.x  && startFinish!="start"){
+          ctx.fillStyle = 'red';
+          cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="finish";
+        }
+        else{
+          ctx.fillStyle = 'white';
+          cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="empty";
+        }
+        ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2); 
       }
       else{
-        ctx.fillStyle = 'white';
-        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="empty";
+        ctx.clearRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
+        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="wall";
       }
-      ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2); 
     }
-    else{
-      ctx.clearRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
-      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="wall";
+    if (change=="begin"){
+      if (cells[currentStart.y][currentStart.x]=="start"){
+      //убрать старый старт
+      ctx.fillStyle = currentStart.type=="wall"?'black':currentStart.type=="empty"?'white':currentStart.type=="start"?'green':'red';
+      ctx.fillRect(currentStart.x*cellSize+1, currentStart.y*cellSize+1, cellSize-2, cellSize-2); 
+      cells[currentStart.y][currentStart.x]=currentStart.type;
+      }
+      if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="finish"){//для отмены стен
+        startFinish="start";
+      }
+      //обозначить новый старт
+      ctx.fillStyle = 'green';
+      ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
+      currentStart={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]};
+      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="start";
     }
-  }
-  if (change=="begin"){
-    if (cells[currentStart.y][currentStart.x]=="start"){
-    //убрать старый старт
-    ctx.fillStyle = currentStart.type=="wall"?'black':currentStart.type=="empty"?'white':currentStart.type=="start"?'green':'red';
-    ctx.fillRect(currentStart.x*cellSize+1, currentStart.y*cellSize+1, cellSize-2, cellSize-2); 
-    cells[currentStart.y][currentStart.x]=currentStart.type;
+    if (change=="end"){
+      if (cells[currentFinish.y][currentFinish.x]=="finish"){
+      ctx.fillStyle = currentFinish.type=="wall"?'black':currentFinish.type=="empty"?'white':currentFinish.type=="start"?'green':'red';
+      ctx.fillRect(currentFinish.x*cellSize+1, currentFinish.y*cellSize+1, cellSize-2, cellSize-2); 
+      cells[currentFinish.y][currentFinish.x]=currentFinish.type;
+      }
+      if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="start"){//для отмены стен
+        startFinish="finish";
+      }
+      ctx.fillStyle = 'red';
+      ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
+      currentFinish={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]};
+      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="finish";  
     }
-    if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="finish"){//для отмены стен
-      startFinish="start";
-    }
-    //обозначить новый старт
-    ctx.fillStyle = 'green';
-    ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
-    currentStart={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]};
-    cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="start";
-  }
-  if (change=="end"){
-    if (cells[currentFinish.y][currentFinish.x]=="finish"){
-    ctx.fillStyle = currentFinish.type=="wall"?'black':currentFinish.type=="empty"?'white':currentFinish.type=="start"?'green':'red';
-    ctx.fillRect(currentFinish.x*cellSize+1, currentFinish.y*cellSize+1, cellSize-2, cellSize-2); 
-    cells[currentFinish.y][currentFinish.x]=currentFinish.type;
-    }
-    if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="start"){//для отмены стен
-      startFinish="finish";
-    }
-    ctx.fillStyle = 'red';
-    ctx.fillRect(Math.floor(x/cellSize)*cellSize+1, Math.floor(y/cellSize)*cellSize+1, cellSize-2, cellSize-2);
-    currentFinish={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]};
-    cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="finish";  
   }
 });
 
@@ -298,7 +303,7 @@ else {
 
 function start(){
   if (num==null){
-    alert("Введите число")
+    alert("Создайте лабиринт")
   }
   else{
     if (cells[currentStart.y][currentStart.x]!="start" && cells[currentFinish.y][currentFinish.x]!="finish"){
