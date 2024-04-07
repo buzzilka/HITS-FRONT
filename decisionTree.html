@@ -3,30 +3,41 @@
   <head>
     <meta charset="UTF-8">
     <title>Дерево решений</title>
+    <link href="decisionTree.css" rel="stylesheet">
   </head>
+  <style>
+  .tree {
+    display: table;
+    margin: 0 auto;
+    padding: 0;
+  }
+  </style>
 
 <body>
-    <h1><center>Дерево решений</center></h1>
-    <ul class="Container">
-      <li class="Node IsRoot ExpandOpen">
-        <div class="Expand"></div>
-          <div class="Content"></div>
-          <ul class="Container">
-            <li class="Node ExpandLeaf">
-              <div class="Expand"></div>
-              <div class="Content"></div>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    <div>Загрузить обучающую выборку</div>
-    <input id = "fileInput" type="file" accept=".CSV">
-    <p></p>
-    <button id = "buildDecisionTree" onclick="buildDecisionTree()">Построить дерево</button>
-    <button id = "optimizeDecisionTree" onclick="optimizeDecisionTree()">Оптимизировать размер дерева</button>
-    <p></p>
-    <input type="text" id="textInput" placeholder="Ввод данных">
-    <button id = "bypassDecisionTree" onclick="bypassDecisionTree()">Обход по дереву</button>
-    <script src="decisionTree.js"></script>
+  <h1><center>Дерево решений</center></h1>
+  <ul id = "root" class="tree"></ul>
+  <audio src="oleg-kenzov-raketa-bomba-petarda.mp3" id="audio" loop="loop"></audio>
+  <div id="music">
+    <button onclick="play()"></button>
+    <button onclick="pause()"></button>
+    <button onclick="volume()"></button>
+  </div>
+  <div>Выбрать разделитель
+    <select id="separator" name="separator" onchange="separator()">
+      <option value=";">;</option>
+      <option value=",">,</option>
+      <option value=" ">Space</option>
+    </select>
+  </div>
+  <p></p>
+  <div>Загрузить обучающую выборку</div>
+  <input id = "fileInput" type="file" accept=".CSV" onchange="fileInput()">
+  <p></p>
+  <button id = "buildDecisionTree" onclick="buildDecisionTree()">Построить дерево</button>
+  <button id = "optimizeDecisionTree" onclick="optimizeDecisionTree()">Оптимизировать размер дерева</button>
+  <p></p>
+  <input type="text" id="userInput" placeholder="">
+  <button id = "bypassDecisionTree" onclick="bypassDecisionTree()">Обход по дереву</button>
+  <script src="decisionTree.js" ></script>
 </body>
 </html>
