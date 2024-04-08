@@ -1,45 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" href="nnetwork.css">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        canvas {
-            background-color: rgba(132, 142, 156, 0.3);
-            cursor: pointer;
-            border: 3px solid gray;
-            display: block;
-            box-sizing: border-box;
-        }
-        button {
-        cursor: pointer;
-        font-size: 20px;
-         margin: 0 auto;
-        display: block;
-        }
-    </style>
+    <title>Нейронная сеть</title>
 </head>
-<body id="body">
-    <div id="root" style="display: flex; justify-content: center; flex-direction: column; gap: 16px; align-content: center;">
-        <h1 style="text-align: center;">Нейронная сеть</h1>
-        <div  style="display: flex; justify-content: center; align-content: center; width: 100%;">  
-            <canvas id="canvas"></canvas>
-        </div>
-        <script >
-            const canvas = document.getElementById("canvas");
-            function onResize(){
-                canvas.height=504;
-                canvas.width=504;
-            }
-            window.addEventListener("resize", onResize);
-            onResize();
-        </script>
-        <button onclick="">Угадать число</button>
-        <button onclick="clearCanvas()">Очистить</button>
-        <label class="brushSizeLabel">Размер кисти: </label>
-        <input id="brushSize" type="range" min="5" max="30" value="13"/>
-        <script src="nnetwork.js"></script>
+<body>
+    <div class="topnav">
+        <a href="">Главная</a>
+        <a href="">Генетический Алгоритм</a>
+        <a href="">Муравьиный Алгоритм</a>
+        <a href="">Алгоритм A*</a>
+        <a href="">Кластеризация</a>
+        <a href="">Нейронная Сеть</a>
+        <a href="">Дерево решений</a>
+        <a href="">Авторы</a>
     </div>
+    <div class="container">
+        <canvas id="canvas" width="50" height="50"></canvas>
+    </div>
+    <div class="btn-container">
+        <button id="buttonStart">Отгадать</button>
+        <button id="buttonClear">Очистить</button> 
+    </div>
+    <div class="answer">
+        <p id="answerPlace"></p>
+    </div>
+    <script type="module" src="nnetwork.js"></script>
 </body>
 </html>
