@@ -1,3 +1,6 @@
+//https://www.youtube.com/watch?v=GNcGPw_Kb_0&t=798s&ab_channel=Onigiri
+//исходный код на Java
+
 export function nnMain(biases, weights) {
     const sigmoid = (x) => 1 / (1 + Math.exp(-x));
  
