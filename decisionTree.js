@@ -121,6 +121,27 @@ function sortAttributes() {
     return attributes.sort(compare);
 }
 
+function quickSort(arr, arr2, beg, end)
+{
+	let p, i, j;
+	i = beg; j = end;
+	p = (arr[i] + arr[(i + j) / 2] + arr[j]) / 3;
+	while (i < j)
+	{
+		while (arr[i] > p && i < end) i++;
+		while (arr[j] < p && j > beg) j--;
+		if (i <= j) {
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+            [arr2[i], arr2[j]] = [arr2[j], arr2[i]];
+
+			i++; j--;
+		}
+	}
+	if (beg < j ) quickSort(arr, beg, j);
+	if (i < end) quickSort(arr, i, end);
+    return arr2;
+}
+
 function clear() {
     document.getElementById("root").innerHTML = "";
 }
@@ -183,6 +204,7 @@ function display(curNode, treeElement) {
  
     let newBranch = document.createElement("li");//создание ответвления от вершины
     let newBranchText = document.createElement("span");//элемент для текста
+    newBranchText.style.backgroundColor = 'white';
     newBranchText.textContent = curNode.name;//заполнение текста
     if (curNode.path) {//окраска пути обхода
         newBranchText.style.backgroundColor = "SkyBlue";
@@ -228,16 +250,7 @@ function sortBranches(colIndex) {
         count.push(getClassMatrix(colIndex, branches[i]).length - 1);//количество вхождений значения ветки
     }
 
-    for (let i = 0; i < branches.length; i++) {//сортировка 
-        for (let j = i + 1; j < branches.length; j++) {
-            if (count[i] < count[j]) {
-                [count[i], count[j]] = [count[j], count[i]];
-                [branches[i], branches[j]] = [branches[j], branches[i]];
-            }
-        }
-    }
-
-    return branches;
+    return quickSort(count, branches, 0, count.length - 1);
 }
 function getLeaves(curNode, curData) {
     if (curNode.branches.length != 0) {//поиск листьев

@@ -3,9 +3,34 @@
     bottom: 0;
     position: absolute;
 }
-#settings{
-    left: 0;
-    bottom: 0;
+#tree {
+    overflow: auto;
+    padding: 16px;
+    background-color: black;
+    border: 3px solid black;
+    border-radius: 10px;
+    box-shadow: 2px 2px 15px #2f808169;
+    width: 50%;
+    height: 400px;
+    min-width: 400px;
+    margin: 10px 20px;
+    display: block;
+    position: relative;
+    top: 75px;
+    margin-top: -0.625em;
+    left: 50%; 
+    transform: translateX(-50%); 
+}
+#dataInput{
+    right: 19%; 
+    transform: translateX(-19%);
+    bottom: 60px;
+    position: absolute;
+}
+#functions{
+    left: 33%; 
+    transform: translateX(-33%);
+    bottom: 75px;
     position: absolute;
 }
 .tree, .tree ul, .tree li {
