@@ -1,50 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" href="genetic.css">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Генетический алгоритм</title>
 </head>
 <style>
-    h1 {
-        font-size: 70px;
-        color: rgb(29,116,153);
-    }
-
-    canvas {
-        background-color: black;
-        height: 650px;
-        width: 650px;
-        cursor: pointer;
-        border: 3px solid gray;
-        
-    }
-
     button{
         cursor: pointer;
         font-size: 20px;
     }
 </style>
 <body>
-    <h1><center>Генетический алгоритм</center></h1>
-    <center><canvas id="canvas" width="650" height="650"></canvas></center>
-    <p></p>
-    <center>
-        <button id="first" onclick="start()">Старт</button>
-        <button id="second" onclick="clear()">Очистить</button>
-        <button id="third" onclick="toBack()">Ctrl+z</button>
-    </center>
-    <center>
-        <h10>Количество поколений
-            <input type="number" id="generation_size" />
-        </h10>
-        <h10>Размер популяции
-            <input type="number" id="population_size" />
-        </h10>
-        <h10>Процент мутации
-            <input type="number" id="probability_mutation" />
-        </h10>
-    </center>
+    <audio src="zombiemp3.mp3" id="audio" loop="loop"></audio>
+    <div id="music">
+        <button id="play" onclick="play()"></button>
+        <button id="pause" onclick="pause()"></button>
+        <button id="volume" onclick="volume()"></button>
+    </div>
+    <div class="topnav">
+        <a href="/HITS-FRONT/main/main-page.html">Главная</a>
+        <a href="/HITS-FRONT/genetic Algorithm/genetic.html">Генетический Алгоритм</a>
+        <a href="">Муравьиный Алгоритм</a>
+        <a href="/HITS-FRONT/a-star/Aalg.html">Алгоритм A*</a>
+        <a href="/HITS-FRONT/clustering/cluster-main.html">Кластеризация</a>
+        <a href="/HITS-FRONT/neural-network/nnetwork.html">Нейронная Сеть</a>
+        <a href="">Дерево решений</a>
+        <a href="">Авторы</a>
+    </div>
+    <div class="container">
+        <canvas id="canvas" width="650" height="650"></canvas>
+    </div>
+    <button id="first" onclick="start()" style="position: absolute; left: 72%; top: 620px;">Старт</button>
+    <button id="second" onclick="clear()" style="position: absolute; left: 72%; top: 680px;">Очистить</button>
+    <button id="third" onclick="toBack()" style="position: absolute; left: 72%; top: 740px;">Ctrl+z</button>
+    <div id="firstInput">
+        <input type="number" id="generation_size"/>
+        <h10>Количество поколений</h10>
+    </div>
+    <div id="secondInput">
+        <input type="number" id="population_size"/>
+        <h10>Размер популяции</h10>
+    </div>
+    <div id="thirdInput">
+        <input type="number" id="probability_mutation"/>
+        <h10>Процент мутации</h10>
+    </div>
     <script src="genetic.js" type="module"></script>
 </body>
 </html>

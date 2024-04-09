@@ -260,3 +260,20 @@ async function start() {
         drawPoints();
     }
 }
+
+let audio = document.getElementById('audio');
+
+document.getElementById('play').onclick = play;
+function play() {
+  audio.play();
+}
+
+document.getElementById('pause').onclick = pause;
+function pause() {
+  audio.pause();
+}
+
+document.getElementById('volume').onclick = volume;
+function volume() {
+  audio.volume = Math.random();
+}

@@ -1,0 +1,125 @@
+body{
+    background: #2f2f2f;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: linear-gradient(45deg, #FFF581,#FFB078);
+    background-size: 400% 400%;
+    animation: gradient 10s ease infinite;
+    font-family: sans-serif;
+}
+
+@keyframes gradient {
+    0%{
+        background-position: 0 50%;
+    }
+    50%{
+        background-position: 100% 50%;
+    }
+    100%{
+        background-position: 0 50%;
+    }
+}
+
+#music{
+    right: 0;
+    bottom: 0;
+    position: absolute;
+  }
+
+.container{
+    display: flex;
+    width: 100%;
+    height: 80vh;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+#canvas{
+    border-radius: 10px;
+    background-color: rgb(0, 0, 0);
+    width: 650px;
+    height: 650px;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#firstInput {
+    position: absolute;
+    left: 72.5%;
+    top: 560px;
+}
+
+#secondInput {
+    position: absolute;
+    left: 72.5%;
+    top: 520px;
+}
+
+#thirdInput {
+    position: absolute;
+    left: 72.5%;
+    top: 480px;
+}
+
+#first, #second, #third {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+#first, #second, #third {
+    background-color: #2f2f2f;
+    color: #fff;
+    font-family: Trebuchet MS;
+    font-size: 20px;
+    font-weight: 300;
+    font-style: italic;
+    text-decoration: none;
+    padding: 14px 50px;
+    border: 0px solid #000000;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+#first:hover, #second:hover, #third:hover{
+    background-color: #5c5c5c;
+}
+
+#first:active, #second:active, #third:active{
+    transform: scale(0.95);
+}
+
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-around;
+}
+
+.topnav a {
+    flex: 1; 
+    color: #f2f2f2;
+    text-align: center;
+    padding: 30px 0px;
+    text-decoration: none;
+    font-size: 15px;
+    box-sizing: border-box; 
+}
+
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.topnav a.active {
+    color: white;
+}
