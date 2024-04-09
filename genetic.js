@@ -5,8 +5,9 @@ let points = [];
 let path = [];
 let population = [];
 let bestPath = [];
-let populationCount = 1;
-const probabilityMutation = 90;
+let populationCount;
+let generationCount;
+let probabilityMutation;
 
 
 canvas.addEventListener('click', function(event) {
@@ -17,29 +18,8 @@ canvas.addEventListener('click', function(event) {
     points.push({ x, y });
 
     drawPoints();
-    joinPoints('black');
-    drawDistance();
+    //joinPoints('white');
 });
-
-function drawDistance() {
-    for (let i = 0; i < points.length; i++) {
-        for (let j = i + 1; j < points.length; j++)
-        {
-            const first = points[i];
-            const second = points[j];
-
-            const distance = calcDistance(first, second);
-            const center = findCenter(first, second);
-
-            ctx.fillStyle = 'blue';
-            ctx.fillText(distance.toFixed(0), center.x, center.y);
-        }
-    }
-}
-
-function findCenter(first, second) {
-    return { x: (first.x + second.x)/2, y: (first.y + second.y)/2};
-}
 
 function calcDistance(first, second) {
     return Math.hypot(first.x - second.x, first.y - second.y);
@@ -55,7 +35,7 @@ function sumDistance(arr) {
 }
 
 function drawPoints() {
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     points.forEach(point => {
         ctx.beginPath();
         ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
@@ -64,13 +44,13 @@ function drawPoints() {
 }
 
 async function drawPath(arr) {
-    ctx.strokeStyle = 'red';
+    ctx.strokeStyle = 'white';
     ctx.beginPath();
     for (let j = 0; j < arr.length - 1; j++) {
         ctx.moveTo(arr[j].x, arr[j].y);
         ctx.lineTo(arr[j + 1].x, arr[j + 1].y);
         ctx.stroke();
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 50));
     }
     ctx.moveTo(arr[0].x, arr[0].y);
     ctx.lineTo(arr[arr.length - 1].x, arr[arr.length - 1].y);
@@ -105,8 +85,37 @@ function toBack() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     points.length--;
     drawPoints();
-    joinPoints('black');
-    drawDistance();
+    //joinPoints('black');
+}
+
+function getGenerationCount() {
+    let num = document.getElementById('generation_size').value;
+    if (num == "") {
+        alert("Введите количество поколений");
+    }
+    else {
+        generationCount = parseInt(num);
+    }
+}
+
+function getPopulationCount() {
+    let num = document.getElementById('population_size').value;
+    if (num == "") {
+        alert("Введите размер популяции");
+    }
+    else {
+        populationCount = parseInt(num);
+    }
+}
+
+function getProbabilityMutation() {
+    let num = document.getElementById('probability_mutation').value;
+    if (num == "") {
+        alert("Введите процент мутации");
+    }
+    else {
+        probabilityMutation = parseInt(num);
+    }
 }
 
 function getRandom() {
@@ -123,10 +132,6 @@ function randomPath() {
     path = [];
     getRandom();
     return path;
-}
-
-function sizeOfPopulation() {
-    populationCount = 10 * points.length;
 }
 
 function sex() {
@@ -200,9 +205,14 @@ function geneticAlgorythm()
 document.getElementById('first').onclick = start;
 
 async function start() {
-    populationCount = 1;
-    population.length = 0;
-    sizeOfPopulation();
+    population = [];
+    let memory = [];
+    let count = 0;
+    let i = 0;
+
+    getGenerationCount();
+    getPopulationCount();
+    getProbabilityMutation();
 
     for (let i = 0; i < populationCount; i++)
     {
@@ -211,40 +221,42 @@ async function start() {
         population.push({osob: f, length: sumDistance(f)});
     }
     
-    for (let i = 0; i < populationCount; i++) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+    for (i; i < generationCount; i++) {
+        await new Promise(resolve => setTimeout(resolve, 25));
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawDistance();
-        joinPoints('grey');
+        //joinPoints('grey');
         drawPoints();
 
         geneticAlgorythm();
 
-        let randomIndex = Math.floor(Math.random() * (population.length - 1));
-        bestPath = population[randomIndex].osob;
+        let currentWay = population[0].osob;
 
-        ctx.strokeStyle = 'red';
+        bestPath = population[0].osob;
+
+        if (memory.toString() === bestPath.toString()) {
+            count += 1;
+        }
+        else {
+            count = 0;
+            memory = bestPath;
+        }
+
+        if (count == 4) {
+            i = generationCount;
+        }
+
+        ctx.strokeStyle = 'white';
         ctx.beginPath();
-        for (let j = 0; j < bestPath.length - 1; j++) {
-            ctx.moveTo(bestPath[j].x, bestPath[j].y);
-            ctx.lineTo(bestPath[j + 1].x, bestPath[j + 1].y);
+        for (let j = 0; j < currentWay.length - 1; j++) {
+            ctx.moveTo(currentWay[j].x, currentWay[j].y);
+            ctx.lineTo(currentWay[j + 1].x, currentWay[j + 1].y);
             ctx.stroke();
             drawPoints();
+            await new Promise(resolve => setTimeout(resolve, 25));
         }
-        ctx.moveTo(bestPath[0].x, bestPath[0].y);
-        ctx.lineTo(bestPath[bestPath.length - 1].x, bestPath[bestPath.length - 1].y);
+        ctx.moveTo(currentWay[0].x, currentWay[0].y);
+        ctx.lineTo(currentWay[currentWay.length - 1].x, currentWay[currentWay.length - 1].y);
         ctx.stroke();
         drawPoints();
     }
-
-    console.log(population);
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawDistance();
-    joinPoints('grey');
-    drawPoints();
-
-    bestPath = population[0].osob;
-
-    drawPath(bestPath);
 }
