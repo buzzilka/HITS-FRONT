@@ -9,7 +9,6 @@
     background-color: black;
     border: 3px solid black;
     border-radius: 10px;
-    box-shadow: 2px 2px 15px #2f808169;
     width: 50%;
     height: 400px;
     min-width: 400px;
@@ -22,8 +21,8 @@
     transform: translateX(-50%); 
 }
 #dataInput{
-    right: 19%; 
-    transform: translateX(-19%);
+    right: 18%; 
+    transform: translateX(-18%);
     bottom: 60px;
     position: absolute;
 }
