@@ -17,7 +17,19 @@
     }
 </style>
 <body>
-  <h1><center>Алгоритм A*</center></h1>
+  <div class="topnav">
+    <a href="/HITS-FRONT/main/main-page.html">Главная</a>
+    <a href="">Генетический Алгоритм</a>
+    <a href="">Муравьиный Алгоритм</a>
+    <a href="/HITS-FRONT/a-star/Aalg.html">Алгоритм A*</a>
+    <a href="/HITS-FRONT/clustering/cluster-main.html">Кластеризация</a>
+    <a href="/HITS-FRONT/neural-network/nnetwork.html">Нейронная Сеть</a>
+    <a href="">Дерево решений</a>
+    <a href="">Авторы</a>
+  </div>
+  <p></p>
+  <div><center>Алгоритм A*</center></div>
+  <p></p>
   <audio src="som.mp3" id="audio1" loop="loop"></audio>
   <audio src="evr.mp3" id="audio2" loop="loop"></audio>
   <div id="music">
@@ -27,7 +39,9 @@
     <button onclick="volume()"></button>
   </div>
   <canvas id="canvas" height=500px width=500px></canvas>
-  <label>Number input </label><input id="number-in" name="number-in" type="number" min="2" max="100" step="1"/>
+  <center>
+    <p></p>
+  <label>Размер карты </label><input id="number-in" name="number-in" type="number" min="2" max="100" step="1"/>
   <button id="input" onclick="input()">Ввод</button>
   <p></p>
   <select id="redact" name="redact" onchange="redact()">
@@ -35,8 +49,8 @@
     <option value="begin">Установить старт</option>
     <option value="end">Установить финиш</option>
   </select>
-  <p></p>
   <button id="start" onclick="start()">Начать</button>
   <script src="Aalg.js"></script>
+  </center>
 </body>
 </html>

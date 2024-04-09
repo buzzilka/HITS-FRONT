@@ -158,6 +158,21 @@ function generateLabyrinth(){
     //добавление возможных точек перехода
     toCheck(x,y,check,isUsed);
   }
+  let arr = ["empty","wall"];
+  if (num % 2 == 0){
+    for (let i = 0; i < num; i++){
+      if (i == 0 && cells[i][num - 2] == "empty" || cells[i - 1][num - 1] == "wall" && cells[i][num - 2] == "empty" || 
+      cells[i - 1][num - 1] == "empty" && cells[i][num - 2] == "wall" || 
+      cells[i - 1][num - 1] == "empty" && cells[i][num - 2] == "empty" && cells[i - 1][num - 2] == "wall"){
+        cells[i][num - 1] = arr[Math.floor(Math.random() * 2)];
+      }
+      if (i == 0 && cells[num - 2][i] == "empty" || cells[num - 1][i - 1] == "wall" && cells[num - 2][i] == "empty" || 
+      cells[num - 1][i - 1] == "empty" && cells[num - 2][i] == "wall" ||
+      cells[num - 1][i - 1] == "empty" && cells[num - 2][i] == "empty" && cells[num - 2][i - 1] == "wall"){
+        cells[num - 1][i] = arr[Math.floor(Math.random() * 2)];
+      }
+    }
+  }
 }
 
 function setDefaultStartFinish(){
