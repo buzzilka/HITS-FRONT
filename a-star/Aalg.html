@@ -14,6 +14,9 @@
         border: 3px solid gray;
         display: block;
         margin: 0 auto;
+        position: relative;
+        top: 50px;
+        margin-top: -0.625em;
     }
 </style>
 <body>
@@ -27,9 +30,6 @@
     <a href="">Дерево решений</a>
     <a href="">Авторы</a>
   </div>
-  <p></p>
-  <div><center>Алгоритм A*</center></div>
-  <p></p>
   <audio src="som.mp3" id="audio1" loop="loop"></audio>
   <audio src="evr.mp3" id="audio2" loop="loop"></audio>
   <div id="music">
@@ -39,17 +39,17 @@
     <button onclick="volume()"></button>
   </div>
   <canvas id="canvas" height=500px width=500px></canvas>
-  <center>
+  <div id="settings">
+    <label>Размер карты </label><input id="number-in" name="number-in" type="number" min="2" max="100" step="1"/>
+    <button id="input" onclick="input()">Ввод</button>
     <p></p>
-  <label>Размер карты </label><input id="number-in" name="number-in" type="number" min="2" max="100" step="1"/>
-  <button id="input" onclick="input()">Ввод</button>
-  <p></p>
-  <select id="redact" name="redact" onchange="redact()">
-    <option value="walls">Изменить стены</option>
-    <option value="begin">Установить старт</option>
-    <option value="end">Установить финиш</option>
-  </select>
-  <button id="start" onclick="start()">Начать</button>
+    <select id="redact" name="redact" onchange="redact()">
+      <option value="walls">Изменить стены</option>
+      <option value="begin">Установить старт</option>
+      <option value="end">Установить финиш</option>
+    </select>
+    <button id="start" onclick="start()">Начать</button>
+  </div>
   <script src="Aalg.js"></script>
   </center>
 </body>

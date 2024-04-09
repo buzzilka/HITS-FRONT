@@ -3,6 +3,12 @@
   bottom: 0;
   position: absolute;
 }
+#settings{
+  bottom: 40px;
+  position: absolute;
+  left: 50%; 
+  transform: translateX(-50%);
+}
 
 .topnav {
   background-color: #333;
