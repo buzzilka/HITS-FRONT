@@ -50,20 +50,20 @@ body
 }
 
 .menu li a img {
-    opacity: 0; /* Начальное состояние - изображение невидимо */
-    transition: opacity 3s; /* Добавляем эффект перехода для изменения прозрачности */
-    position: relative; /* Позиционируем изображение абсолютно */
+    opacity: 0;
+    transition: opacity 3s; 
+    position: relative;
     top: 0;
     left: 0;
-    opacity: 0; /* Начальное состояние - изображение невидимо */
-    transition: opacity 1s; /* Добавляем эффект перехода для изменения прозрачности */
-    z-index: -1; /* Помещаем изображение за кнопками при неактивном состоянии */
+    opacity: 0; 
+    transition: opacity 1s;
+    z-index: -1; 
 }
 
 .menu.active li a img {
-    opacity: 1; /* При активации меню изображение становится видимым */
-    opacity: 1; /* При активации меню изображение становится видимым */
-    z-index: 1; /* Поднимаем изображение поверх кнопок */
+    opacity: 1; 
+    opacity: 1;
+    z-index: 1;
 }
 .menu.active li a
 {
