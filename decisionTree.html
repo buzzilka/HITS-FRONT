@@ -14,6 +14,16 @@
   </style>
 
 <body>
+  <div class="topnav">
+    <a href="/HITS-FRONT/main/main-page.html">Главная</a>
+    <a href="">Генетический Алгоритм</a>
+    <a href="">Муравьиный Алгоритм</a>
+    <a href="/HITS-FRONT/a-star/Aalg.html">Алгоритм A*</a>
+    <a href="/HITS-FRONT/clustering/cluster-main.html">Кластеризация</a>
+    <a href="/HITS-FRONT/neural-network/nnetwork.html">Нейронная Сеть</a>
+    <a href="">Дерево решений</a>
+    <a href="">Авторы</a>
+  </div>
   <h1><center>Дерево решений</center></h1>
   <ul id = "root" class="tree"></ul>
   <audio src="oleg-kenzov-raketa-bomba-petarda.mp3" id="audio" loop="loop"></audio>
@@ -22,6 +32,7 @@
     <button onclick="pause()"></button>
     <button onclick="volume()"></button>
   </div>
+<div id="settings">
   <div>Выбрать разделитель
     <select id="separator" name="separator" onchange="separator()">
       <option value=";">;</option>
@@ -38,6 +49,8 @@
   <p></p>
   <input type="text" id="userInput" placeholder="">
   <button id = "bypassDecisionTree" onclick="bypassDecisionTree()">Обход по дереву</button>
+  <p></p>
+</div>
   <script src="decisionTree.js" ></script>
 </body>
 </html>
