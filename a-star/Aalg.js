@@ -9,6 +9,9 @@ function input(){
   if (num==""){
     alert("Введите число")
   }
+  else if (num > 100){
+    alert("Введите число до 100")
+  }
   else{
     cellSize = canvas.width / num;
     create();
@@ -57,28 +60,28 @@ function drawLabyrinth(){
     for (let x = 0; x < num; x++) {
       if (cells[y][x] == "empty"){
         ctx.fillStyle = 'white';
-        ctx.fillRect(x*cellSize+1, y*cellSize+1, cellSize-2, cellSize-2); 
+        ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize); 
       }
       else if (cells[y][x] == "start")
       {
         ctx.fillStyle = 'green';
-        ctx.fillRect(x*cellSize+1, y*cellSize+1, cellSize-2, cellSize-2);
+        ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
       }
       else if (cells[y][x] == "wall")
       {
-        ctx.clearRect(x*cellSize+1, y*cellSize+1, cellSize-2, cellSize-2);
+        ctx.clearRect(x*cellSize, y*cellSize, cellSize, cellSize);
       }
       else if (cells[y][x] == "finish"){
         ctx.fillStyle = 'red';
-        ctx.fillRect(x*cellSize+1, y*cellSize+1, cellSize-2, cellSize-2);
+        ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
       }
       else if (cells[y][x] == "path"){
         ctx.fillStyle = 'SkyBlue';
-        ctx.fillRect(x*cellSize+1, y*cellSize+1, cellSize-2, cellSize-2);
+        ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
       }
       else{
         ctx.fillStyle = 'pink';
-        ctx.fillRect(x*cellSize+1, y*cellSize+1, cellSize-2, cellSize-2);
+        ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
       }
     }
   }
@@ -191,8 +194,8 @@ function setStartFinish(){
 function display()
 {
   clear();
-  drawGrid();
   drawLabyrinth();
+  drawGrid();
 }
 function create(){
   clearLabyrinth();
@@ -336,6 +339,9 @@ else {
 function start(){
   if (num==null){
     alert("Создайте лабиринт")
+  }
+  else if (num > 100){
+    alert("Введите число до 100")
   }
   else{
     if (cells[currentStart.y][currentStart.x]!="start" && cells[currentFinish.y][currentFinish.x]!="finish"){
