@@ -3,11 +3,22 @@
   bottom: 0;
   position: absolute;
 }
-#settings{
-  bottom: 40px;
-  position: absolute;
-  left: 50%; 
-  transform: translateX(-50%);
+.container {
+  margin: 5% auto;
+  display: flex;
+  justify-content: center;
+}
+
+#settings, #work {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+}
+#canvas{
+  background-color: rgb(0, 0, 0);
+  width: 500px;
+  height: 500px;
+  cursor: pointer;
 }
 
 .topnav {

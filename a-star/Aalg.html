@@ -5,20 +5,6 @@
     <title>A*</title>
     <link href="Aalg.css" rel="stylesheet">
   </head>
-  <style>
-    canvas {
-        background-color:black;
-        height: 500px;
-        width: 500px;
-        cursor: pointer;
-        border: 3px solid gray;
-        display: block;
-        margin: 0 auto;
-        position: relative;
-        top: 50px;
-        margin-top: -0.625em;
-    }
-</style>
 <body>
   <div class="topnav">
     <a href="/HITS-FRONT/main/main-page.html">Главная</a>
@@ -38,19 +24,30 @@
     <button onclick="pause()"></button>
     <button onclick="volume()"></button>
   </div>
-  <canvas id="canvas" height=500px width=500px></canvas>
-  <div id="settings">
-    <label>Размер карты </label><input id="number-in" name="number-in" type="number" min="2" max="100" step="1"/>
-    <button id="input" onclick="input()">Ввод</button>
-    <p></p>
-    <select id="redact" name="redact" onchange="redact()">
-      <option value="walls">Изменить стены</option>
-      <option value="begin">Установить старт</option>
-      <option value="end">Установить финиш</option>
-    </select>
-    <button id="start" onclick="start()">Начать</button>
-  </div>
+  <div class="container">
+    <canvas id="canvas" height=500px width=500px></canvas>
+    <div id="settings">
+      <label>Размер карты </label><input id="sizeLab" type="range" min="3" max="100" step="1" value="20" oninput="outPut.value = this.value"/>
+      <output id="outPut">20</output>
+      <br>
+      <button id="input" onclick="create()">Сгенерировать лабиринт</button>
+      <br>
+      <button id="emptyLab" onclick="emptyLab()">Создать пустой лабиринт</button>
+      <br>
+      <select id="redact" name="redact" onchange="redact()">
+        <option value="walls">Изменить стены</option>
+        <option value="begin">Установить старт</option>
+        <option value="end">Установить финиш</option>
+      </select>
+      <br>
+      <button id="start" onclick="start()">Начать</button>
+      <br>
+      <button id="deletePath" onclick="deletePath()">Очистить путь</button>
+      <br>
+      <label>Замедление анимации</label><input id="speed" type="range" min="0" max="100" step="1" value="5" oninput="output.value = this.value"> 
+      <output id="output">5</output>
+    </div>
+    </div>
   <script src="Aalg.js"></script>
-  </center>
 </body>
 </html>

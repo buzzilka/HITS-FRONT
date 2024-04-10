@@ -3,21 +3,12 @@ const ctx = canvas.getContext('2d');
 let num, cellSize;
 let cells;
 let currentStart, currentFinish;
+let isPending, flag = false;
 
-function input(){
-  num = document.getElementById('number-in').value;
-  if (num==""){
-    alert("Введите число")
-  }
-  else if (num > 100){
-    alert("Введите число до 100")
-  }
-  else{
-    cellSize = canvas.width / num;
-    create();
-  }
+function getNum(){
+  num = document.getElementById('sizeLab').value;
+  cellSize = canvas.width / num;
 }
-
 function clear(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
@@ -27,16 +18,29 @@ function clearLabyrinth()
   for (let i = 0; i < num; i++) {
     cells[i]=new Array(num);//массив стен и коридоров
     for (let j = 0;j<num;j++){
-      cells[i][j]="wall";
+      cells[i][j]={typeOfEmpty:"empty",isWall:"wall"};
     }
   }
+}
+function emptyLab(){
+  flag = true;
+  getNum();
+  cells = new Array(num);
+  for (let i = 0; i < num; i++) {
+    cells[i]=new Array(num);//массив стен и коридоров
+    for (let j = 0;j<num;j++){
+      cells[i][j]={typeOfEmpty:"empty",isWall:"empty"};
+    }
+  }
+  setDefaultStartFinish();
+  display();
 }
 function clearPath()
 {
   for (let y = 0; y < num; y++) {
     for (let x = 0; x < num; x++) {
-      if (cells[y][x] == "path" || cells[y][x] == "findPath"){
-        cells[y][x] = "empty"; 
+      if ((cells[y][x].typeOfEmpty == "path" || cells[y][x].typeOfEmpty == "findPath") && cells[y][x].isWall == "empty"){
+        cells[y][x].typeOfEmpty = "empty"; 
       }
     }
   }
@@ -58,24 +62,24 @@ function drawGrid(){
 function drawLabyrinth(){
   for (let y = 0; y < num; y++) {
     for (let x = 0; x < num; x++) {
-      if (cells[y][x] == "empty"){
+      if (cells[y][x].isWall == "wall")
+      {
+        ctx.clearRect(x*cellSize, y*cellSize, cellSize, cellSize);
+      }
+      else if (cells[y][x].typeOfEmpty == "empty"){
         ctx.fillStyle = 'white';
         ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize); 
       }
-      else if (cells[y][x] == "start")
+      else if (cells[y][x].typeOfEmpty == "start")
       {
         ctx.fillStyle = 'green';
         ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
       }
-      else if (cells[y][x] == "wall")
-      {
-        ctx.clearRect(x*cellSize, y*cellSize, cellSize, cellSize);
-      }
-      else if (cells[y][x] == "finish"){
+      else if (cells[y][x].typeOfEmpty == "finish"){
         ctx.fillStyle = 'red';
         ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
       }
-      else if (cells[y][x] == "path"){
+      else if (cells[y][x].typeOfEmpty == "path"){
         ctx.fillStyle = 'SkyBlue';
         ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
       }
@@ -90,19 +94,19 @@ function drawLabyrinth(){
 function generateLabyrinth(){
   function toCheck(x,y,check,isUsed)
   {
-    if (y - 2 >= 0 && cells[y-2][x]=="wall" && isUsed[y-2][x]!=true) {
+    if (y - 2 >= 0 && cells[y-2][x].isWall == "wall" && isUsed[y-2][x]!=true) {
       check.push({x: x, y: y-2});
       isUsed[y-2][x]=true;
     }
-    if (y + 2 < num && cells[y+2][x]=="wall" && isUsed[y+2][x]!=true) {
+    if (y + 2 < num && cells[y+2][x].isWall=="wall" && isUsed[y+2][x]!=true) {
       check.push({x: x, y: y+2});
       isUsed[y+2][x]=true;
     }
-    if (x - 2 >= 0 && cells[y][x-2]=="wall" && isUsed[y][x-2]!=true) {
+    if (x - 2 >= 0 && cells[y][x-2].isWall=="wall" && isUsed[y][x-2]!=true) {
       check.push({x: x - 2, y: y});
       isUsed[y][x-2]=true;
     }
-    if (x + 2 < num && cells[y][x+2]=="wall" && isUsed[y][x+2]!=true) {
+    if (x + 2 < num && cells[y][x+2].isWall=="wall" && isUsed[y][x+2]!=true) {
       check.push({x: x + 2, y: y});
       isUsed[y][x+2]=true;
     }
@@ -118,9 +122,9 @@ function generateLabyrinth(){
   //выбор точки начала
   let x = Math.floor(Math.random() * num / 2) * 2;
   let y = Math.floor(Math.random() * num / 2) * 2;
-  cells[y][x]="empty";
+  cells[y][x].isWall="empty";
   isUsed[y][x]=true;
-  currentStart={x:x,y:y,type:cells[y][x]};//установка старта
+  currentStart={x:x,y:y,type:cells[y][x].typeOfEmpty};//установка старта
 
   //добавление возможных точек перехода
   let check = [];
@@ -131,28 +135,28 @@ function generateLabyrinth(){
     let index = Math.floor(Math.random() * check.length);
     x = check[index].x;
     y = check[index].y;
-    cells[y][x]="empty";
+    cells[y][x].isWall="empty";
     check.splice(index,1);
-    currentFinish={x:x,y:y,type:cells[y][x]};//установка финиша
+    currentFinish={x:x,y:y,type:cells[y][x].typeOfEmpty};//установка финиша
 
     //и убрать стены
     let d = [0,1,2,3];
     while (d.length>0) {
       let rand = Math.floor(Math.random() * d.length);
-      if (y - 2 >= 0 && cells[y-2][x]=="empty" && d[rand]==0) {
-        cells[y-1][x]="empty";
+      if (y - 2 >= 0 && cells[y-2][x].isWall=="empty" && d[rand]==0) {
+        cells[y-1][x].isWall="empty";
         d.length=0;
       }
-      if (y + 2 < num && cells[y+2][x]=="empty" && d[rand]==1) {
-        cells[y+1][x]="empty";
+      if (y + 2 < num && cells[y+2][x].isWall=="empty" && d[rand]==1) {
+        cells[y+1][x].isWall="empty";
         d.length=0;
       }
-      if (x - 2 >= 0 && cells[y][x-2]=="empty" && d[rand]==2) {
-        cells[y][x-1]="empty";
+      if (x - 2 >= 0 && cells[y][x-2].isWall=="empty" && d[rand]==2) {
+        cells[y][x-1].isWall="empty";
         d.length=0;
       }
-      if (x + 2 < num && cells[y][x+2]=="empty" && d[rand]==3) {
-        cells[y][x+1]="empty";
+      if (x + 2 < num && cells[y][x+2].isWall=="empty" && d[rand]==3) {
+        cells[y][x+1].isWall="empty";
         d.length=0;
       }
       d.splice(rand,1);
@@ -164,31 +168,31 @@ function generateLabyrinth(){
   let arr = ["empty","wall"];
   if (num % 2 == 0){
     for (let i = 0; i < num; i++){
-      if (i == 0 && cells[i][num - 2] == "empty" || cells[i - 1][num - 1] == "wall" && cells[i][num - 2] == "empty" || 
-      cells[i - 1][num - 1] == "empty" && cells[i][num - 2] == "wall" || 
-      cells[i - 1][num - 1] == "empty" && cells[i][num - 2] == "empty" && cells[i - 1][num - 2] == "wall"){
-        cells[i][num - 1] = arr[Math.floor(Math.random() * 2)];
+      if (i == 0 && cells[i][num - 2].isWall == "empty" || cells[i - 1][num - 1].isWall == "wall" && cells[i][num - 2].isWall == "empty" || 
+      cells[i - 1][num - 1].isWall == "empty" && cells[i][num - 2].isWall == "wall" || 
+      cells[i - 1][num - 1].isWall == "empty" && cells[i][num - 2].isWall == "empty" && cells[i - 1][num - 2].isWall == "wall"){
+        cells[i][num - 1].isWall = arr[Math.floor(Math.random() * 2)];
       }
-      if (i == 0 && cells[num - 2][i] == "empty" || cells[num - 1][i - 1] == "wall" && cells[num - 2][i] == "empty" || 
-      cells[num - 1][i - 1] == "empty" && cells[num - 2][i] == "wall" ||
-      cells[num - 1][i - 1] == "empty" && cells[num - 2][i] == "empty" && cells[num - 2][i - 1] == "wall"){
-        cells[num - 1][i] = arr[Math.floor(Math.random() * 2)];
+      if (i == 0 && cells[num - 2][i].isWall == "empty" || cells[num - 1][i - 1].isWall == "wall" && cells[num - 2][i].isWall == "empty" || 
+      cells[num - 1][i - 1].isWall == "empty" && cells[num - 2][i].isWall == "wall" ||
+      cells[num - 1][i - 1].isWall == "empty" && cells[num - 2][i].isWall == "empty" && cells[num - 2][i - 1].isWall == "wall"){
+        cells[num - 1][i].isWall = arr[Math.floor(Math.random() * 2)];
       }
     }
   }
 }
 
 function setDefaultStartFinish(){
-  cells[num-2][num-1]="empty";//проход до финиша
-  cells[0][1]="empty";//проход до старта
-  currentStart={x:0,y:0,type:cells[0][0]};
-  cells[0][0]="start";
-  currentFinish={x:num-1,y:num-1,type:cells[num-1][num-1]};
-  cells[num-1][num-1]="finish";
+  cells[num-2][num-1].isWall="empty";//проход до финиша
+  cells[0][1].isWall="empty";//проход до старта
+  currentStart={x:0,y:0,type:cells[0][0].typeOfEmpty};
+  cells[0][0].typeOfEmpty="start";
+  currentFinish={x:num-1,y:num-1,type:cells[num-1][num-1].typeOfEmpty};
+  cells[num-1][num-1].typeOfEmpty="finish";
 }
 function setStartFinish(){
-  cells[currentStart.y][currentStart.x]="start";
-  cells[currentFinish.y][currentFinish.x]="finish";
+  cells[currentStart.y][currentStart.x].typeOfEmpty="start";
+  cells[currentFinish.y][currentFinish.x].typeOfEmpty="finish";
 }
 
 function display()
@@ -198,6 +202,8 @@ function display()
   drawGrid();
 }
 function create(){
+  flag = true;
+  getNum();
   clearLabyrinth();
   generateLabyrinth();
   //setDefaultStartFinish();
@@ -210,58 +216,57 @@ function redact() {
   change = document.getElementById('redact').value;
 }
 
-let startFinish="startFinish";//для отмены стен
 canvas.addEventListener('click', function(event) {
-  if (num==null){
-    alert("Создайте лабиринт")
+  if (num == null || isPending){
+    return;
   }
   else{
     const rect = canvas.getBoundingClientRect();  //координаты клика
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     if (change=="walls"){
-      if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="wall"){
-        if (Math.floor(y/cellSize)==currentStart.y && Math.floor(x/cellSize)==currentStart.x && startFinish!="finish"){
-          cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="start";
-        }
-        else if (Math.floor(y/cellSize)==currentFinish.y && Math.floor(x/cellSize)==currentFinish.x  && startFinish!="start"){
-          cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="finish";
-        }
-        else{
-          cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="empty";
-        }
+      if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall=="wall"){
+        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall="empty";
+      }
+      else if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty=="start"||
+      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty=="finish"){
+        return;
       }
       else{
-        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="wall";
+        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall="wall";
       }
     }
     if (change=="begin"){
-      if (cells[currentStart.y][currentStart.x]=="start"){
-      //убрать старый старт
-      cells[currentStart.y][currentStart.x]=currentStart.type;
+      if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall=="wall" || 
+      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty=="finish"){
+        return;
       }
-      if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="finish"){//для отмены стен
-        startFinish="start";
+      else if (cells[currentStart.y][currentStart.x].typeOfEmpty=="start"){
+      //убрать старый старт
+      cells[currentStart.y][currentStart.x].typeOfEmpty=currentStart.type;
       }
       //обозначить новый старт
-      currentStart={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]};
-      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="start";
+      currentStart={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty};
+      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty="start";
     }
     if (change=="end"){
-      if (cells[currentFinish.y][currentFinish.x]=="finish"){
-      cells[currentFinish.y][currentFinish.x]=currentFinish.type;
+      if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall=="wall" ||
+      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty=="start"){
+        return;
       }
-      if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]=="start"){//для отмены стен
-        startFinish="finish";
+      else if (cells[currentFinish.y][currentFinish.x].typeOfEmpty=="finish"){
+      cells[currentFinish.y][currentFinish.x].typeOfEmpty=currentFinish.type;
       }
-      currentFinish={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]};
-      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)]="finish";  
+      currentFinish={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty};
+      cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty="finish";  
     }
     display();
   }
 });
 
 async function aStar(){
+  isPending = true;
+
   function heuristic(a, b){//Манхэттен
     return Math.abs(b.x - a.x) + Math.abs(b.y - a.y);
   }
@@ -280,30 +285,25 @@ async function aStar(){
   reachable.push({x:currentStart.x,y:currentStart.y,toStart:0,allPath:0,parent:null});
   let explored = new Array; //проверенные клетки
   let current;
-  while (reachable.length > 0) {//пока есть клетки для проверки
+  while (reachable.length > 0 && !flag) {//пока есть клетки для проверки
     reachable.sort(compare);
     current = reachable.shift();//берём клетку с наименьшей суммарной дистанцией
     explored.push(current);
     if (current.x == currentFinish.x && current.y == currentFinish.y) { //нашли финиш
       break;
     }
-    if ((current.x != currentStart.x || current.y != currentStart.y) && (current.x != currentFinish.x || current.y != currentFinish.y)) {
-      cells[current.y][current.x] = "findPath";
-      await new Promise(resolve => setTimeout(resolve, 5));
-      display();
-    }
-
     let ways = [{x:1, y:0}, {x:0, y:1}, {x:-1, y:0}, {x:0, y:-1}];
     for (let i = 0; i < ways.length; i++) {//проверить соседей текущей клетки
       let neighbour = {x:current.x + ways[i].x, y:current.y + ways[i].y, toStart:0, allPath:0, parent:null};
       let isReachable = reachable.find(cell => (cell.x == neighbour.x && cell.y == neighbour.y));
       let isExplored = explored.find(cell => (cell.x == neighbour.x && cell.y == neighbour.y));
       if (neighbour.x >= 0 && neighbour.x < num && neighbour.y >= 0 && neighbour.y < num ){//если клетка существует
-        if (cells[neighbour.y][neighbour.x] != "wall" && isExplored == null) {//и пустая и не использована 
+        if (cells[neighbour.y][neighbour.x].isWall != "wall" && isExplored == null) {//и пустая и не использована 
           if (isReachable == null) {//и не находится в reachable просчитать дистанции
             if(neighbour.x != currentFinish.x || neighbour.y != currentFinish.y){
-              cells[neighbour.y][neighbour.x] = "findPath";
-              await new Promise(resolve => setTimeout(resolve, 5));
+              cells[neighbour.y][neighbour.x].typeOfEmpty = "findPath";
+              await new Promise(resolve => setTimeout(resolve, document.getElementById('speed').value));
+              if (flag) break;
               display();
             }
             neighbour.toStart = current.toStart + 1;
@@ -325,36 +325,35 @@ async function aStar(){
 if (current.x == currentFinish.x && current.y == currentFinish.y) {//если найден финеш рисуем путь
   current=current.parent;
   for(;current.parent != null; current = current.parent) {
-    cells[current.y][current.x]="path";
+    if (flag) break;
+    cells[current.y][current.x].typeOfEmpty="path";
     await new Promise(resolve => setTimeout(resolve, 10));
     display();
   }
   setTimeout(() => alert("Путь найден :)"), 100);
 } 
-else {
-  alert("Пути нет :(");
+else if (!flag){
+  alert("Не смогли найти путь :(");
 }
+isPending = false;
 }
-
+function deletePath()
+{
+  flag = true;
+  clearPath();
+  display();
+}
 function start(){
   if (num==null){
-    alert("Создайте лабиринт")
+    alert("Создайте лабиринт");
   }
-  else if (num > 100){
-    alert("Введите число до 100")
+  else if(isPending){
+    alert("Идёт поиск пути... Чтобы начать поиск сначала, очистите путь");
   }
   else{
-    if (cells[currentStart.y][currentStart.x]!="start" && cells[currentFinish.y][currentFinish.x]!="finish"){
-    alert("please, set start and finish");
-    }
-    else if (cells[currentStart.y][currentStart.x]!="start"){
-      alert("please, set start");
-    }
-    else if (cells[currentFinish.y][currentFinish.x]!="finish"){
-      alert("please, set finish");
-    }
     clearPath();
     display();
+    flag = false;
     aStar();
   }
 }
