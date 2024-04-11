@@ -180,6 +180,9 @@ function geneticAlgorythm()
 document.getElementById('first').onclick = start;
 
 async function start() {
+    document.getElementById('second').disabled = true;
+    document.getElementById('third').disabled = true;
+
     let lastWay = [];
     population = [];
 
@@ -217,7 +220,9 @@ async function start() {
     bestPath = population[0].osob;
     let color = 'red';
     drawPath(color);
-    
+
+    document.getElementById('second').disabled = false;
+    document.getElementById('third').disabled = false;
 }
 
 let audio = document.getElementById('audio');
