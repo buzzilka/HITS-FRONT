@@ -35,23 +35,23 @@
         <a href="">Дерево решений</a>
         <a href="">Авторы</a>
     </div>
+
     <div class="container">
-        <canvas id="canvas" width="650" height="650"></canvas>
-    </div>
-    <button id="first" onclick="start()" style="position: absolute; left: 72%; top: 620px;">Старт</button>
-    <button id="second" onclick="clear()" style="position: absolute; left: 72%; top: 680px;">Очистить</button>
-    <button id="third" onclick="toBack()" style="position: absolute; left: 72%; top: 740px;">Ctrl+z</button>
-    <div id="firstInput">
-        <input id="generation_size" type="range" min="10" max="2000" step="1" value="50" oninput="firstOutPut.value = this.value"/><label>Количество поколений</label>
-        <output id="firstOutPut">50</output>
-    </div>
-    <div id="secondInput">
-        <input id="population_size" type="range" min="3" max="500" step="1" value="10" oninput="secondOutPut.value = this.value"/><label>Размер популяции</label>
-        <output id="secondOutPut">10</output>
-    </div>
-    <div id="thirdInput">
-        <input id="probability_mutation" type="range" min="50" max="100" step="1" value="70" oninput="thirdOutPut.value = this.value"/><label>Процент мутации</label>
-        <output id="thirdOutPut">70</output>
+        <canvas id="canvas" height=650px width=650px></canvas>
+        <div id="settings">
+            <label>Количество поколений</label><input id="generation_size" type="range" min="10" max="2000" step="1" value="50" oninput="firstOutPut.value = this.value"/>
+            <output id="firstOutPut">50</output>
+            <br>
+            <label>Размер популяции</label><input id="population_size" type="range" min="3" max="500" step="1" value="10" oninput="secondOutPut.value = this.value"/>
+            <output id="secondOutPut">10</output>
+            <br>
+            <label>Процент мутации</label><input id="probability_mutation" type="range" min="50" max="100" step="1" value="70" oninput="thirdOutPut.value = this.value"/>
+            <output id="thirdOutPut">70</output>
+            <br>
+            <button id="first" onclick="start()">Старт</button>
+            <button id="second" onclick="clear()">Очистить</button>
+            <button id="third" onclick="toBack()">Ctrl+z</button>
+        </div>
     </div>
     <script src="genetic.js" type="module"></script>
 </body>
