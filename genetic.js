@@ -42,17 +42,16 @@ function drawPoints() {
     });
 }
 
-async function drawPath(arr) {
-    ctx.strokeStyle = 'white';
+function drawPath(color) {
+    ctx.strokeStyle = color;
     ctx.beginPath();
-    for (let j = 0; j < arr.length - 1; j++) {
-        ctx.moveTo(arr[j].x, arr[j].y);
-        ctx.lineTo(arr[j + 1].x, arr[j + 1].y);
+    for (let j = 0; j < bestPath.length - 1; j++) {
+        ctx.moveTo(bestPath[j].x, bestPath[j].y);
+        ctx.lineTo(bestPath[j + 1].x, bestPath[j + 1].y);
         ctx.stroke();
-        await new Promise(resolve => setTimeout(resolve, 50));
     }
-    ctx.moveTo(arr[0].x, arr[0].y);
-    ctx.lineTo(arr[arr.length - 1].x, arr[arr.length - 1].y);
+    ctx.moveTo(bestPath[0].x, bestPath[0].y);
+    ctx.lineTo(bestPath[bestPath.length - 1].x, bestPath[bestPath.length - 1].y);
     ctx.stroke();
     drawPoints();
 }
@@ -88,32 +87,17 @@ function toBack() {
 
 function getGenerationCount() {
     let num = document.getElementById('generation_size').value;
-    if (num == "") {
-        alert("Введите количество поколений");
-    }
-    else {
-        generationCount = parseInt(num);
-    }
+    generationCount = parseInt(num);
 }
 
 function getPopulationCount() {
     let num = document.getElementById('population_size').value;
-    if (num == "") {
-        alert("Введите размер популяции");
-    }
-    else {
-        populationCount = parseInt(num);
-    }
+    populationCount = parseInt(num);
 }
 
 function getProbabilityMutation() {
     let num = document.getElementById('probability_mutation').value;
-    if (num == "") {
-        alert("Введите процент мутации");
-    }
-    else {
-        probabilityMutation = parseInt(num);
-    }
+    probabilityMutation = parseInt(num);
 }
 
 function getRandom() {
@@ -160,49 +144,6 @@ function sex() {
         
         population.push({osob: child, length: sumDistance(child)});
     }
-    /*let firstIndex = Math.floor(Math.random() * (populationCount));
-    let secondIndex = firstIndex;
-
-    while (firstIndex === secondIndex) {
-        firstIndex = Math.floor(Math.random() * (populationCount));
-    }
-
-    let mom = population[firstIndex].osob;
-    let dad = population[secondIndex].osob;
-
-    let child1 = [];
-    let child2 = [];
-
-    let countOfGens =  Math.floor(Math.random() * (mom.length - 2)) + 1;
-
-    for (let i = 0; i < countOfGens; i++) {
-        child1.push(mom[i]);
-        child2.push(dad[i]);
-    }
-    for (let i = countOfGens; i < dad.length; i++)
-    {
-        if (!child1.includes(dad[i])) {
-            child1.push(dad[i]);
-        }
-        if (!child2.includes(mom[i])) {
-            child2.push(mom[i]);
-        }
-    }
-    for (let i = 0; i < dad.length; i++) {
-        if (!child1.includes(dad[i])) {
-            child1.push(dad[i]);
-        }
-        if (!child2.includes(mom[i])) {
-            child2.push(mom[i]);
-        }
-    }
-    
-    child1 = mutation(child1);
-    child2 = mutation(child2);
-
-    population.push({osob: child1, length: sumDistance(child1)});
-    population.push({osob: child2, length: sumDistance(child2)});
-    */
 }
 
 
@@ -239,6 +180,7 @@ function geneticAlgorythm()
 document.getElementById('first').onclick = start;
 
 async function start() {
+    let lastWay = [];
     population = [];
 
     getGenerationCount();
@@ -253,41 +195,29 @@ async function start() {
     }
     
     for (let i = 0; i < generationCount; i++) {
-        await new Promise(resolve => setTimeout(resolve, 1));
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawPoints();
 
         geneticAlgorythm();
 
-        let currentWay = population[0].osob;
+        bestPath = population[0].osob;
 
-        ctx.strokeStyle = 'white';
-        ctx.beginPath();
-        for (let j = 0; j < currentWay.length - 1; j++) {
-            ctx.moveTo(currentWay[j].x, currentWay[j].y);
-            ctx.lineTo(currentWay[j + 1].x, currentWay[j + 1].y);
-            ctx.stroke();
-            drawPoints();
+        if (bestPath !== lastWay || i == 0) {
+            let color = 'white';
+            drawPath(color);
+            await new Promise(resolve => setTimeout(resolve, 1));
         }
-        ctx.moveTo(currentWay[0].x, currentWay[0].y);
-        ctx.lineTo(currentWay[currentWay.length - 1].x, currentWay[currentWay.length - 1].y);
-        ctx.stroke();
-        drawPoints();
+        else {
+            let color = 'white'
+            drawPath(color);
+        }
+        lastWay = population[0].osob;
     }
 
-    let bestPath = population[0].osob;
-    ctx.strokeStyle = 'red';
-    ctx.beginPath();
-    for (let j = 0; j < bestPath.length - 1; j++) {
-        ctx.moveTo(bestPath[j].x, bestPath[j].y);
-        ctx.lineTo(bestPath[j + 1].x, bestPath[j + 1].y);
-        ctx.stroke();
-        drawPoints();
-    }
-    ctx.moveTo(bestPath[0].x, bestPath[0].y);
-    ctx.lineTo(bestPath[bestPath.length - 1].x, bestPath[bestPath.length - 1].y);
-    ctx.stroke();
-    drawPoints();
+    bestPath = population[0].osob;
+    let color = 'red';
+    drawPath(color);
+    
 }
 
 let audio = document.getElementById('audio');
