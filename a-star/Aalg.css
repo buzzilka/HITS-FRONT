@@ -9,10 +9,31 @@
   justify-content: center;
 }
 
-#settings, #work {
+#settings {
   margin-left: 10px;
   display: flex;
   flex-direction: column;
+}
+#createLab, #emptyLab, #start, #deletePath, #redact {
+  background-color: #2f2f2f;
+  color: #fff;
+  font-family: Trebuchet MS;
+  font-size: 17px;
+  font-weight: 400;
+  font-style: italic;
+  text-decoration: none;
+  padding: 14px 10px;
+  border: 0px solid #000000;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+#createLab:hover, #emptyLab:hover, #start:hover, #deletePath:hover, #redact:hover{
+  background-color: #5c5c5c;
+}
+
+#createLab:active, #emptyLab:active, #start:active, #deletePath:active{
+  transform: scale(0.95);
 }
 #canvas{
   background-color: rgb(0, 0, 0);
