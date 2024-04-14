@@ -1,15 +1,15 @@
 //https://www.youtube.com/watch?v=GNcGPw_Kb_0&t=798s&ab_channel=Onigiri
 //исходный код на Java
 
-const fs = require("fs");
-const sharp = require("sharp");
+const fs = require("fs"); 
+const sharp = require("sharp"); 
 
 const getImageData = async (path, size, file) => {
     return new Promise(async (resolve, reject) => {
         try {
             const { data } = await sharp(path + "/" + file)
                 .raw()
-                .toBuffer({ resolveWithObject: true });
+                .toBuffer({ resolveWithObject: true }); 
 
             const pixels = [];
 
@@ -20,11 +20,11 @@ const getImageData = async (path, size, file) => {
                 }
                 value /= 3;
 
-                pixels.push(value / 255);
+                pixels.push(value / 255); 
             }
 
             resolve({
-                digit: Number(file[10]),
+                digit: Number(file[10]), // Получение цифры из имени файла
                 pixels
             });
         } catch (error) {
@@ -36,18 +36,18 @@ const getImageData = async (path, size, file) => {
 };
 
 const getImagesData = async (size) => {
-    const path = "./train50x50";
+    const path = "./train50x50"; 
 
-    const files = fs.readdirSync(path);
+    const files = fs.readdirSync(path); 
 
     const imagesData = await Promise.all(
         files.map((file) => getImageData(path, size, file))
-    );
+    ); // Получение данных по каждому изображению
 
     return imagesData;
 };
 
-const path = "./nn";
+const path = "./nn"; 
 
 class Layer {
     constructor(size, nextLayerSize) {
@@ -61,88 +61,86 @@ class Layer {
 class NeuralNetwork {
     constructor(learningRate, sigmoid, dsigmoid, ...sizes) {
         this.learningRate = learningRate;
-        this.sigmoid = sigmoid;
-        this.dsigmoid = dsigmoid;
+        this.sigmoid = sigmoid; 
+        this.dsigmoid = dsigmoid; 
         this.layers = [];
 
         sizes.forEach((size, i) => {
             let nextLayerSize = i < sizes.length - 1 ? sizes[i + 1] : 0;
             this.layers.push(new Layer(size, nextLayerSize));
 
-            this.layers[i].biases = this.layers[i].biases.map(() => Math.random() * 2.0 - 1.0);
-            this.layers[i].weights = this.layers[i].weights.map(() => new Array(nextLayerSize).fill(0).map(() => Math.random() * 2.0 - 1.0));
+            this.layers[i].biases = this.layers[i].biases.map(() => Math.random() * 2.0 - 1.0); 
+            this.layers[i].weights = this.layers[i].weights.map(() => new Array(nextLayerSize).fill(0).map(() => Math.random() * 2.0 - 1.0)); 
         });
     }
 
+    // Прямое распространение входных данных через сеть
     feedForward(inputs) {
-        this.layers[0].neurons = inputs.slice();
-        for (let i = 1; i < this.layers.length; i++) { // let i = 1 - было
-            let prevLayer= this.layers[i - 1];
+        this.layers[0].neurons = inputs.slice(); 
+        for (let i = 1; i < this.layers.length; i++) {
+            let prevLayer = this.layers[i - 1];
             let curLayer = this.layers[i];
             for (let j = 0; j < curLayer.size; j++) {
                 curLayer.neurons[j] = 0;
                 for (let k = 0; k < prevLayer.size; k++) {
-                    curLayer.neurons[j] += prevLayer.neurons[k] * prevLayer.weights[k][j];
+                    curLayer.neurons[j] += prevLayer.neurons[k] * prevLayer.weights[k][j]; 
                 }
                 curLayer.neurons[j] += curLayer.biases[j];
-                curLayer.neurons[j] = this.sigmoid(curLayer.neurons[j]);
+                curLayer.neurons[j] = this.sigmoid(curLayer.neurons[j]); 
             }
         }
         return this.layers[this.layers.length - 1].neurons;
     }
 
+    // Обратное распространение ошибки для корректировки весов
     backpropagation(targets) {
         let errors = new Array(this.layers[this.layers.length - 1].size);
 
         for (let i = 0; i < this.layers[this.layers.length - 1].size; i++) {
-            errors[i] = targets[i] - this.layers[this.layers.length - 1].neurons[i];
+            errors[i] = targets[i] - this.layers[this.layers.length - 1].neurons[i]; 
         }
 
         for (let k = this.layers.length - 2; k >= 0; k--) {
-            let prevLayer= this.layers[k];
+            let prevLayer = this.layers[k];
             let curLayer = this.layers[k + 1];
             let errorsNext = new Array(prevLayer.size).fill(0);
-            let gradients = new Array(curLayer.size).fill(0);
+            let gradients = new Array(curLayer.size).fill(0); 
 
+            // Вычисление градиентов для каждого нейрона в текущем слое
             for (let i = 0; i < curLayer.size; i++) {
-                gradients[i] = errors[i] * this.dsigmoid(this.layers[k + 1].neurons[i]);
-                gradients[i] *= this.learningRate;
+                gradients[i] = errors[i] * this.dsigmoid(this.layers[k + 1].neurons[i]); 
+                gradients[i] *= this.learningRate; 
             }
 
-            let deltas = new Array(curLayer.length).fill(0);
-            for (let i = 0; i < curLayer.size; i++) {
-                deltas[i] = new Array(prevLayer.length).fill(0);
-            }   
+            let deltas = new Array(curLayer.size).fill(0).map(() => new Array(prevLayer.size).fill(0)); 
 
             for (let i = 0; i < curLayer.size; i++) {
                 for (let j = 0; j < prevLayer.size; j++) {
-                    deltas[i][j] = gradients[i] * prevLayer.neurons[j];
+                    deltas[i][j] = gradients[i] * prevLayer.neurons[j]; 
                 }
             }
 
             for (let i = 0; i < prevLayer.size; i++) {
+                errorsNext[i] = 0;
                 for (let j = 0; j < curLayer.size; j++) {
-                    errorsNext[i] += prevLayer.weights[i][j] * errors[j];
+                    errorsNext[i] += prevLayer.weights[i][j] * errors[j]; 
                 }
             }
 
-            errors = errorsNext;
+            errors = errorsNext; 
 
-            let weightsNew = new Array(prevLayer.weights.length).fill(0);
-            for (let i = 0; i < prevLayer.weights.length; i++) {
-                weightsNew[i] = new Array(prevLayer.weights[0].length).fill(0);
-            }
+            let weightsNew = new Array(prevLayer.weights.length).fill(0).map(() => new Array(prevLayer.weights[0].length).fill(0));
 
             for (let i = 0; i < curLayer.size; i++) {
                 for (let j = 0; j < prevLayer.size; j++) {
-                    weightsNew[j][i] = prevLayer.weights[j][i] + deltas[i][j];
+                    weightsNew[j][i] = prevLayer.weights[j][i] + deltas[i][j]; // Корректировка весов
                 }
             }
 
-            prevLayer.weights = weightsNew;
+            prevLayer.weights = weightsNew; // Присваивание новых весов предыдущему слою
 
             for (let i = 0; i < curLayer.size; i++) {
-                curLayer.biases[i] += gradients[i];
+                curLayer.biases[i] += gradients[i]; // Обновление смещений текущего слоя
             }
         }
     }
@@ -168,58 +166,59 @@ class NeuralNetwork {
         fs.writeFileSync(path + "/" + file, jsonBiases);
     }
 }
+
 const goThroughEpochs = (NN, imagesData, digits, epochs) => {
-    for (let i = 0; i < epochs; i++) {
+    for (let i = 0; i < epochs; i++) {я
         let correct = 0;
         for (let j = i * 100; j < i * 100 + 100; j++) {
-            const startDigit = digits[j];
-            const targets = new Array(10).fill(0);
-            targets[startDigit] = 1;
+            const startDigit = digits[j]; 
+            const targets = new Array(10).fill(0); 
+            targets[startDigit] = 1; 
 
-            const output = NN.feedForward(imagesData[j].pixels);
+            const output = NN.feedForward(imagesData[j].pixels); 
 
-            let endDigit = 0;
-            let endDigitWeight = -1;
+            let endDigit = 0; // Переменная для предполагаемой окончательной цифры
+            let endDigitWeight = -1; // Вес предполагаемой окончательной цифры
 
-            for (let d = 0; d < 10; d++) {
-                if (endDigitWeight < output[d]) {
+            for (let d = 0; d < 10; d++) { 
+                if (endDigitWeight < output[d]) { 
                     endDigitWeight = output[d];
                     endDigit = d;
                 }
             }
+            
             if (startDigit === endDigit) {
                 correct++;
             }
 
-            NN.backpropagation(targets);
+            NN.backpropagation(targets); // Обратное распространение ошибки для корректировки весов
         }
 
-        console.log(i, correct);
+        console.log(i, correct); 
     }
 };
 
 const learn = async () => {
-    const sigmoid = (x) => 1 / (1 + Math.exp(-x));
+    const sigmoid = (x) => 1 / (1 + Math.exp(-x)); 
     const dsigmoid = (y) => y * (1 - y);
 
-    const NeuralNetworks = new NeuralNetwork(0.01, sigmoid, dsigmoid, 2500, 1000, 10);
+    const NeuralNetworks = new NeuralNetwork(0.01, sigmoid, dsigmoid, 2500, 1000, 10); // Создание нейронной сети с заданными параметрами
 
-    const imagesData = await getImagesData(50);
+    const imagesData = await getImagesData(50); 
 
-    const digits = imagesData.map((imageData) => imageData.digit);
+    const digits = imagesData.map((imageData) => imageData.digit); 
 
-    const epochs = 600;
+    const epochs = 600; 
 
-    goThroughEpochs(NeuralNetworks, imagesData, digits, epochs);
+    goThroughEpochs(NeuralNetworks, imagesData, digits, epochs); 
 
     if (!fs.existsSync(path)) {
-        fs.mkdirSync(path);
+        fs.mkdirSync(path); 
     }
 
-    NeuralNetworks.saveWeightsToFile("weights.json");
-    NeuralNetworks.saveNeuronsToFile("neurons.json");
-    NeuralNetworks.saveBiasesToFile("biases.json");
-
+    NeuralNetworks.saveWeightsToFile("weights.json"); 
+    NeuralNetworks.saveNeuronsToFile("neurons.json"); 
+    NeuralNetworks.saveBiasesToFile("biases.json"); 
 };
 
 learn();

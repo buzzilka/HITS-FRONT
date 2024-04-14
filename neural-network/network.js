@@ -2,11 +2,14 @@
 //исходный код на Java
 
 export function nnMain(biases, weights) {
+    // Функция сигмоида для расчета активации нейрона
     const sigmoid = (x) => 1 / (1 + Math.exp(-x));
  
     function feedForward(network, inputs) {
+       
         network.layers[0].neurons = [...inputs];
  
+        // Вычисление значений нейронов
         for (let i = 1; i < network.layers.length; i++) {
             let prevLayer = network.layers[i - 1];
             let curLayer = network.layers[i];
@@ -26,13 +29,16 @@ export function nnMain(biases, weights) {
         return network.layers[network.layers.length - 1].neurons;
     }
  
+    // Нейронная сеть
     const network = {
-        learningRate: 0.01,
-        layers: []
+        learningRate: 0.01, 
+        layers: [] 
     };
  
+    // Определение размеров слоев на основе входных данных
     const sizes = biases.map(prevLayer => prevLayer.length);
  
+    // Создание слоев сети с установкой весов и смещений
     biases.forEach((layerBiases, index) => {
         const size = sizes[index];
         const prevLayer = {
