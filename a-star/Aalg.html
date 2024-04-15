@@ -27,8 +27,10 @@
   <div class="container">
     <canvas id="canvas" height=500px width=500px></canvas>
     <div id="settings">
-      <label>Размер карты </label><input id="sizeLab" type="range" min="3" max="100" step="1" value="20" oninput="outPut.value = this.value"/>
-      <output id="outPut">20</output>
+      <div id="reg">
+        <div>Размер лабиринта</div>
+        <input id="sizeLab" type="range" min="3" max="100" step="1" value="20" oninput="outPut.value = this.value"/><output id="outPut">20</output>
+      </div>
       <br>
       <button id="createLab" onclick="create()">Сгенерировать лабиринт</button>
       <br>
@@ -44,8 +46,10 @@
       <br>
       <button id="deletePath" onclick="deletePath()">Очистить путь</button>
       <br>
-      <label>Замедление анимации</label><input id="speed" type="range" min="0" max="100" step="1" value="5" oninput="output.value = this.value"> 
-      <output id="output">5</output>
+      <div id="reg">
+        <div>Замедление анимации</div>
+        <input id="speed" type="range" min="0" max="100" step="1" value="5" oninput="output.value = this.value"><output id="output">5</output>
+      </div>
     </div>
     </div>
   <script src="Aalg.js"></script>
