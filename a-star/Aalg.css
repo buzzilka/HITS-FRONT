@@ -4,7 +4,7 @@
   position: absolute;
 }
 .container {
-  margin: 5% auto;
+  margin: 2% auto;
   display: flex;
   justify-content: center;
   max-height: 500px;
@@ -39,8 +39,9 @@
   border: 0px solid #000000;
   border-radius: 10px;
   display: inline-block;
-  margin-bottom: 1.8px; 
-  height: 50px; 
+  margin-bottom: 2.5px; 
+  min-height: 68px; 
+  max-height: 68px; 
   white-space: nowrap;
   text-align: center; 
 }
@@ -85,8 +86,8 @@ input[type=range]::-webkit-slider-thumb {
 }
 #canvas{
   background-color: rgb(0, 0, 0);
-  width: 500px;
-  height: 500px;
+  width: 600px;
+  height: 600px;
   cursor: pointer;
   border-radius: 10px;
 }
