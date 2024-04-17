@@ -3,34 +3,79 @@
     bottom: 0;
     position: absolute;
 }
+.container {
+    margin: 2% auto;
+    display: flex;
+    justify-content: center;
+}
+.input-file {
+	position: relative;
+	display: inline-block;
+}
+.input-file span {
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+	outline: none;
+	text-decoration: none;
+	font-size: 14px;
+	vertical-align: middle;
+	color: rgb(255 255 255);
+	text-align: center;
+	border-radius: 4px;
+	background-color: #2f2f2f;
+	height: 30px;
+	padding: 10px 15px;
+	box-sizing: border-box;
+	border: none;
+	margin: 0;
+	transition: background-color 0.2s;
+}
+.input-file input[type=file] {
+	position: absolute;
+	z-index: -1;
+	opacity: 0;
+	display: block;
+	width: 0;
+	height: 0;
+}
+ 
+/* Focus */
+.input-file input[type=file]:focus + span {
+	box-shadow: 0 0 0 0.2rem #2f2f2f;
+}
+ 
+/* Hover/active */
+.input-file:hover span {
+	background-color: #5c5c5c;
+}
+.input-file:active span {
+	background-color: #2f2f2f;
+}
+ 
+/* Disabled */
+.input-file input[type=file]:disabled + span {
+	background-color: #eee;
+}
+textarea{
+    overflow : auto;
+    min-width: 300px;
+    min-height: 100px;
+    max-width: 300px;
+    max-height: 100px;
+    resize : none;
+    border-radius: 10px;
+}
 #tree {
     overflow: auto;
     padding: 16px;
     background-color: black;
     border: 3px solid black;
     border-radius: 10px;
-    width: 50%;
-    height: 400px;
-    min-width: 400px;
-    margin: 10px 20px;
-    display: block;
-    position: relative;
-    top: 75px;
-    margin-top: -0.625em;
-    left: 50%; 
-    transform: translateX(-50%); 
-}
-#dataInput{
-    right: 18%; 
-    transform: translateX(-18%);
-    bottom: 60px;
-    position: absolute;
-}
-#functions{
-    left: 33%; 
-    transform: translateX(-33%);
-    bottom: 75px;
-    position: absolute;
+    min-width: 800px;
+    min-height: 550px;
+    max-width: 800px;
+    max-height: 550px;
 }
 .tree, .tree ul, .tree li {
     list-style: none;
@@ -61,6 +106,7 @@ vertical-align: top;
     right: 0;
     top: 0;
 }
+
 .tree li:first-child:before {left: 50%;}
 .tree li:last-child:before {right: 50%;}
 .tree code, .tree span {
@@ -140,3 +186,77 @@ body{
         background-position: 0 50%;
     }
 }
+#settings {
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    max-height: 500px;
+  }
+  @media screen and (max-width: 800px) {
+    #settings {
+      max-height: 300px; /* изменяем высоту столбца при сжатии экрана */
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    #settings {
+      max-height: 200px; /* дополнительное изменение высоты столбца при сжатии экрана */
+    }
+  }
+  #buildDecisionTree, #bypassDecisionTree, #separator, #deleteDecisionTree{
+    background-color: #2f2f2f;
+    color: #fff;
+    font-family: Trebuchet MS;
+    font-size: 17px;
+    font-weight: 400;
+    font-style: italic;
+    text-decoration: none;
+    padding: 14px 10px;
+    border: 0px solid #000000;
+    border-radius: 10px;
+    display: inline-block;
+    margin-bottom: 1px; 
+    height: 50px; 
+    white-space: nowrap;
+    text-align: center; 
+  }
+  input[type=range] {
+    -webkit-appearance: none;
+    height: 7px;
+    background: #e9e9e9;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #01bdab;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  }
+  #reg {
+    padding: 14px 10px;
+    background-color: #2f2f2f;
+    border: 0px solid #000000;
+    border-radius: 10px; 
+    color: #fff;
+    font-family: Trebuchet MS;
+    font-size: 17px;
+    font-weight: 400;
+    font-style: italic;
+    text-decoration: none;
+    text-align: center;
+    max-height: 50px;
+    white-space: nowrap;
+  }
+  
+  #buildDecisionTree:hover, #bypassDecisionTree:hover, #separator:hover, #deleteDecisionTree:hover{
+    background-color: #5c5c5c;
+  }
+  
+  #buildDecisionTree:active, #bypassDecisionTree:active, #deleteDecisionTree:active{
+    transform: scale(0.95);
+  }

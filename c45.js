@@ -1,23 +1,23 @@
 class Node {
-    constructor(name, attrBranch, attrBranchVal) {
+    constructor(name, attrBranch, attrVal) {
         this.name = name; 
         this.attrBranch = attrBranch;
-        this.attrBranchVal = attrBranchVal;  
+        this.attrVal = attrVal;  
         this.branches = [];        
         this.path = false;
     }
 }
 class attrBranch {
-    constructor(nameAttr, index, infGain) {
+    constructor(nameAttr, index, infGain, ratioGain) {
         this.nameAttr = nameAttr; 
         this.index = index;
-        this.infGain = infGain;  
+        this.infGain = infGain; 
+        this.ratioGain = ratioGain;
     }
 }
 
-let data, treeRoot;
+let data, treeRoot, depth, maxDepth;
 treeRoot = new Node;
-treeRoot.branches = 0;
 const leafAttr = new attrBranch("leaf", null, null);
 
 let change = document.getElementById('separator').value;
@@ -30,19 +30,61 @@ function fileInput(){
     reader.readAsText(file.files[0]);
     reader.onload = function () {
         treeRoot = new Node;
-        treeRoot.branches = 0;
         clear();
         clearPath(treeRoot);
 
         let lines = reader.result.split('\r\n');
-        data=new Array(lines.length - 1);
-        for (let i = 0; i < lines.length - 1; i++)
+        attrs = lines[0].split(change);
+        attrsForSearch = lines[0].split(change);
+        data = new Array(lines.length - 2);
+        for (let i = 1; i < lines.length - 1; i++)
         {
-            data[i] = lines[i].split(change);
+            data[i - 1] = lines[i].split(change);
         }
+        dataProcessing();
     }
     reader.error = function(){
         alert("error");
+    }
+}
+function dataProcessing(){
+    function numberingCheck(unique){//проверка на последовательность
+        for (let i = 0; i < unique.length - 2; i++){
+            if (unique[i+2] - unique[i+1] != unique[i+1] - unique[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    let i = 0;
+    for (i; i < data[0].length - 1; i++) {
+        let areNums = true;
+        let unique = [];
+        for (let j = 0; j < data.length; j++){
+            if (!isNaN(parseFloat(data[j][i]))){
+                data[j][i]=parseFloat(data[j][i]);//перевод строки в число
+            }
+            if ((typeof(data[j][i]) == "string") && data[j][i] != ""){//проверка на тип данных в столбце
+                areNums = false;
+            }
+            if (!unique.includes(data[j][i]) || data[j][i]=="") {//проверка на неудачные для разделения атрибуты
+                unique.push(data[j][i]);
+            }
+        }
+        if (!areNums) {
+            for (let j = 0; j < data.length; j++){
+                data[j][i] = data[j][i].toString();//перевод дынных столбца в один тип
+            }
+        }
+        //удаление неудачных для разделения атрибутов
+        if (data.length / unique.length < 1.5 && ((typeof(unique[0]) == "string") || numberingCheck(unique))){
+            for (let j = 0; j < data.length; j++){
+                data[j].splice(i,1);
+            }
+            attrs.splice(i,1);
+            i--;
+        }
     }
 }
 
@@ -72,30 +114,95 @@ function entropy(col) {
     }
     return entrop;
 }
-function getCol(curData, indexCol) {
+function getCol(curData, indexCol, i = 1) {
     let col = [];
-    for (let i = 1; i < curData.length; i++) {
+    for (i; i < curData.length; i++) {
         col.push(curData[i][indexCol]);
     }
     return col;
 }
 function getClassMatrix(indexCol, clas, curData = data) {
     let classMatrix = [];
-    classMatrix.push(curData[0]);
-    for (let i = 1; i < curData.length; i++) {
+    for (let i = 0; i < curData.length; i++) {
         if (curData[i][indexCol] == clas) {
             classMatrix.push(curData[i]);
         }
     }
     return classMatrix;
 }
-function informationGain(col, indexCol) {
+function getClassesRes(groups) {
+    let classes = [];
+    for (let i = 0; i < groups.length; i++) {
+        let classesRes = getRes(groups[i]);
+        for (let j = 0; j < classesRes.length; j++){
+            if (!classes.includes(classesRes[j])) {
+                classes.push(classesRes[j]);
+            }
+        }
+    }
+    return classes;
+}
+function getRes(curData) {
+    let ans = [];
+    for (let i = 0; i < curData.length; i++){
+        ans.push(curData[i][curData[0].length - 1]);
+    }
+    return ans;
+}
+function countGroupElements(groups) {
+    let count = 0;
+    for (let i = 0; i < groups.length; i++) {
+        count += groups[i].length;
+    }
+    return count;
+}
+function getProportion(curData, clas) {
+    let count = 0;
+    for (let i = 0; i < curData.length; i++) {
+        if (clas == curData[i][curData[0].length - 1]) {
+            count++;
+        }
+    }
+    return count / curData.length;
+}
+
+function groupSplit(colIndex, clas) {
+    let left = [], right = [];
+    for (let i = 0; i < curData.length; i++){
+        if ((typeof(curData[i][colIndex]) == "string") &&  clas == curData[i][colIndex] ||
+        (typeof(curData[i][colIndex]) != "string") && curData[i][colIndex] > clas) {//если элемент подходит критерию - влево
+            left.push(curData[i]);
+        } else if (curData[i][colIndex] != ""){// иначе - вправо
+            right.push(curData[i]);
+        }
+    }
+    return [left, right];
+}
+
+function gainRatio(col, indexCol) {
     let classes = getClasses(col);
     let entrop = 0;
+
     for (let i = 0; i < classes.length; i++) {
         let proba = prob(classes[i], col);
         let classMatrix = getClassMatrix(indexCol, classes[i]);
-        let classEntropy = entropy(getCol(classMatrix, classMatrix[0].length - 1));
+        let classEntropy = entropy(getCol(classMatrix, classMatrix[0].length - 1, 0));
+        entrop += proba * classEntropy;
+    }
+    let totalEntropy = entropy(getCol(data, data[0].length - 1));
+    return (totalEntropy - entrop)/entropy(col);
+}
+
+function informationGain(col, indexCol) {
+    let classes = getClasses(col);
+    let entrop = 0;
+    if (col.length / classes.length < 1.5) {
+        return -1;
+    }
+    for (let i = 0; i < classes.length; i++) {
+        let proba = prob(classes[i], col);
+        let classMatrix = getClassMatrix(indexCol, classes[i]);
+        let classEntropy = entropy(getCol(classMatrix, classMatrix[0].length - 1, 0));
         entrop += proba * classEntropy;
     }
     let totalEntropy = entropy(getCol(data, data[0].length - 1));
@@ -103,10 +210,10 @@ function informationGain(col, indexCol) {
 }
 function sortAttributes() {
     function compare(a, b) {
-        if (a.infGain > b.infGain){
+        if (a.ratioGain < b.ratioGain){
             return -1;
         }
-        else if (a.infGain < b.infGain){
+        else if (a.ratioGain > b.ratioGain){
             return 1;
         }
         else{
@@ -116,7 +223,9 @@ function sortAttributes() {
     
     let attributes = [];
     for (let i = 0; i < data[0].length - 1; i++) {
-        attributes.push(new attrBranch(data[0][i],i,informationGain(getCol(data,i),i)));
+        if (informationGain(getCol(data, i),i) != -1){
+            attributes.push(new attrBranch(data[0][i], i, informationGain(getCol(data, i),i), ratioGain(getCol(data, i),i)));
+        }
     }
     return attributes.sort(compare);
 }
@@ -153,25 +262,16 @@ function clearPath(curNode) {
 }
 
 function buildDecisionTree(){
-    if (data==null){
-        alert("Нет данных")
+    if (data == null || data.length == 1){
+        alert("Некорректные данные")
     }
     else{
+        depth = 1;
+        maxDepth = document.getElementById('maxDepth').value;
         clear();//очистка поля
         clearPath(treeRoot); //очистка пути обхода
 
         treeRoot = make();//построение
-        display(treeRoot, document.getElementById("root"));//отображение
-    }
-}
-function optimizeDecisionTree(){
-    if (treeRoot.branches==0) {
-        alert("Постройте дерево")
-    }
-    else{
-        clear();//очистка поля
-        clearPath(treeRoot);//очистка пути обхода
-
         treeCutting(treeRoot);//сокращение дерева
         display(treeRoot, document.getElementById("root"));//отображение
     }
@@ -181,7 +281,7 @@ async function bypassDecisionTree(){
         alert("Постройте дерево")
     }
     else{
-        const userData = document.getElementById("userInput").value.split(";");//данные для обхода
+        const userData = document.getElementById("userInput").value.split(change);//данные для обхода
         let curNode = treeRoot;//начало обхода
         clearPath(treeRoot);
         while (curNode != null) {
@@ -193,6 +293,7 @@ async function bypassDecisionTree(){
 
 function make() {
     let attributes = sortAttributes();//сортировка атрибутов
+    console.log(attributes);
     let root = new Node("root", attributes[0], "root");//корень
     let queue = [root];//очередь вершин с корнем
     getBranches(queue, attributes);//ветки
@@ -227,27 +328,31 @@ function getBranches(queue, attributes) {
         let curNode = queue.shift();//извлечение вершины
         let branches = sortBranches(curNode.attrBranch.index);//ответвления от вершины
 
-        if (attributes.length - curIndex < branches.length) {//обозначение листьев
-            for (let i = 0; i < branches.length - attributes.length + curIndex; i++) {
+        if (attributes.length - curIndex < branches.length || depth >= maxDepth - 2) {//обозначение листьев || depth >= maxDepth - 2
+            let count = branches.length - attributes.length + curIndex;
+            for (let i = 0; i < count; i++) {
                 attributes.push(leafAttr);
             }
         }
-
-        for (let i = 0; i < branches.length; i++) {//добавление веток к вершине
-            if (curIndex < attributes.length) {
-                curNode.branches.push(new Node(`${curNode.attrBranch.nameAttr} = ${branches[i]}`, attributes[curIndex], branches[i]));
-                queue.push(curNode.branches[i]);
-                curIndex++;
+        if (depth < maxDepth - 2)
+        {
+            for (let i = 0; i < branches.length; i++) {//добавление веток к вершине
+                if (curIndex < attributes.length) {
+                    curNode.branches.push(new Node(`${curNode.attrBranch.nameAttr} = ${branches[i]}`, attributes[curIndex], branches[i]));
+                    queue.push(curNode.branches[i]);
+                    curIndex++;
+                }
             }
+            depth++;
         }
     }
 }
 function sortBranches(colIndex) {
-    let branches = getClasses(getCol(data,colIndex));//возможные ответвления
+    let branches = getClasses(getCol(data, colIndex));//возможные ответвления
     let count = [];
 
     for (let i = 0; i < branches.length; i++) {
-        count.push(getClassMatrix(colIndex, branches[i]).length - 1);//количество вхождений значения ветки
+        count.push(getClassMatrix(colIndex, branches[i]).length);//количество вхождений значения ветки
     }
 
     return quickSort(count, branches, 0, count.length - 1);
@@ -256,8 +361,7 @@ function getLeaves(curNode, curData) {
     if (curNode.branches.length != 0) {//поиск листьев
         for (let i = 0; i < curNode.branches.length; i++) {
  
-            let newData = getClassMatrix(curNode.attrBranch.index,curNode.branches[i].attrBranchVal); 
-            newData.splice(0, 1);//матрица с уникальным атрибутом для подсчета результатов
+            let newData = getClassMatrix(curNode.attrBranch.index,curNode.branches[i].attrVal); 
             
             getLeaves(curNode.branches[i], newData);//продолжение добавление листьев
         }
@@ -265,7 +369,7 @@ function getLeaves(curNode, curData) {
     else {//добавление листьев
         let beforeLeaf = getClasses(getCol(data, curNode.attrBranch.index));//возможные варианты прохода до листа
         for (let i = 0; i < beforeLeaf.length; i++) {
-            if (curNode.attrBranch != leafAttr){
+            if (curNode.attrBranch != leafAttr && depth < maxDepth - 1){
                 curNode.branches.push(new Node(`${curNode.attrBranch.nameAttr} = ${beforeLeaf[i]}`, 
                 curNode.attrBranch, beforeLeaf[i]));
 
@@ -286,13 +390,14 @@ function getResults(attr, beforeLeaf, curData) {
         return "unknown";
     }
 
-    let answers = getClasses(getCol(curData, curData[0].length - 1));
+    let answers = getClasses(getCol(curData, curData[0].length - 1, 0));
     let count = [];
     for (let i = 0; i < answers.length; i++) {//нахождение количества ответов по заданному атрибуту
         count.push(getClassMatrix(curData[0].length - 1, answers[i], getClassMatrix(attr.index, beforeLeaf, curData)).length);
     }
-    
-    return answers[count.indexOf(Math.max.apply(null,count))];//самый частовстречающийся ответ
+    //return Math.max.apply(null,count) == Math.min.apply(null,count) && count.length != 1 || Math.max.apply(null,count) == 0? 
+    //"unknown" : answers[count.indexOf(Math.max.apply(null,count))];//самый частовстречающийся ответ
+    return Math.max.apply(null,count) == 0? "unknown" : answers[count.indexOf(Math.max.apply(null,count))];//самый частовстречающийся ответ
 }
 
 function findPathTree(curNode, userData) {
@@ -306,7 +411,7 @@ function findPathTree(curNode, userData) {
         display(treeRoot, document.getElementById("root"));
     }
     for (let i = 0; i < curNode.branches.length; i++) {
-        if (userData[curNode.attrBranch.index] == curNode.branches[i].attrBranchVal || curNode.branches.length == 1) {
+        if (userData[curNode.attrBranch.index] == curNode.branches[i].attrVal || curNode.branches.length == 1) {
             curNode = curNode.branches[i];//следующая вершина
             flag = true;
 
@@ -326,7 +431,7 @@ function findPathTree(curNode, userData) {
 }
 function treeCutting(curNode) {
     if (curNode.branches.length == 1) {//возврат значения листа
-        return [curNode.branches[0].attrBranchVal];
+        return [curNode.branches[0].attrVal];
     }
 
     let res = [];
@@ -354,4 +459,3 @@ function pause() {
 function volume(){
     audio.volume = Math.random();
 }
-
