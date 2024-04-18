@@ -42,6 +42,7 @@ function deleteDecisionTree(f=true){
     data = [];
     reader = null;
     clear();
+    document.getElementById("fileInput").value = "";
     document.getElementById("userInput").value = "";
     document.getElementById("findUserInput").value = "";
     document.getElementById("userInput").placeholder = "Введите обучающую выборку";
