@@ -39,7 +39,6 @@
         </select>
       </div>
       </div>
-      <br>
       <div id="but">
       <div>Загрузить обучающую выборку</div>
       <label class="input-file">
@@ -47,9 +46,7 @@
         <span>Выберите файл</span>
       </label>
       </div>
-      <br>
       <textarea wrap="off" id="userInput" placeholder="Введите обучающую выборку"></textarea>
-      <br>
       <div id="but">
         <div class="form_radio_group">
           <div class="form_radio_group-item">
@@ -63,18 +60,13 @@
           
         </div>
     </div>
-    <br>
       <div id="but">
         <div>Максимальная глубина</div>
             <input id="maxDepth" type="range" min="3" max="100" step="1" value="8" oninput="outPut.value = this.value"/><output id="outPut">8</output>
         </div>
-      <br>
       <button id = "buildDecisionTree" onclick="buildDecisionTree()">Построить дерево</button>
-      <br>
       <input type="text" id="findUserInput" placeholder="Введите данные для обхода по дереву" style="border-radius:10px;border: 0.3px solid grey;">
-      <br>
       <button id = "bypassDecisionTree" onclick="bypassDecisionTree()">Обход по дереву</button>
-      <br>
       <button id = "deleteDecisionTree" onclick="deleteDecisionTree()" >Очистить</button>
     </div>
   </div>
