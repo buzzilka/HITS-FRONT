@@ -1,39 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" href="antAlgorythm.css">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Муравьиный алгоритм</title>
 </head>
 <style>
-    h1 {
-        font-size: 70px;
-        color: rgb(134, 24, 24);
-    }
-
-    canvas {
-        background-color: rgb(4, 22, 48);
-        height: 850px;
-        width: 1550px;
-        cursor: pointer;
-        border: 3px solid gray;
-        
-    }
-
     button{
         cursor: pointer;
         font-size: 20px;
     }
+    h10{
+        font-family: Trebuchet MS;
+        font-size: 20px;
+        font-style: italic;
+        text-decoration: none;
+    }
 </style>
 <body>
-    <h1><center>Муравьиный алгоритм</center></h1>
-    <center><canvas id="canvas" width="1550" height="850"></canvas><center>
-    <p></p>
-    <button id="first" onclick="start()">Старт</button>
-    <button id="second" onclick="clear()">Очистить</button>
-    <button id="third">Добавить стены</button>
-    <button id="fourth">Удалить стены</button>
-    <button id="fiveth">Добавить еду</button>
+    <div class="topnav">
+        <a href="/HITS-FRONT/main/main-page.html">Главная</a>
+        <a href="/HITS-FRONT/Genetic algorithm/genetic.html">Генетический Алгоритм</a>
+        <a href="/HITS-FRONT/Ant algorithm/antAlgorythm.html">Муравьиный Алгоритм</a>
+        <a href="/HITS-FRONT/a-star/Aalg.html">Алгоритм A*</a>
+        <a href="/HITS-FRONT/clustering/cluster-main.html">Кластеризация</a>
+        <a href="/HITS-FRONT/neural-network/nnetwork.html">Нейронная Сеть</a>
+        <a href="">Дерево решений</a>
+        <a href="">Авторы</a>
+    </div>
+
+    <div class="container">
+        <canvas id="canvas" height=650px width=650px></canvas>
+        <div id="settings">
+            <label>Количество итераций</label><input id="iteration_count" type="range" min="10" max="5000" step="1" value="50" oninput="firstOutPut.value = this.value"/>
+            <output id="firstOutPut">50</output>
+            <br>
+            <button id="first" onclick="start()">Старт</button>
+            <button id="second" onclick="clear()">Очистить</button>
+            <button id="third" onclick="toBack()">Ctrl+z</button>
+        </div>
+    </div>
     <script src="antAlgorytm.js" type="module"></script>
 </body>
 </html>
