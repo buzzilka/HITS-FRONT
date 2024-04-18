@@ -30,7 +30,7 @@
     </div>
 
     <div id="settings">
-      <div id="reg">
+      <div id="but">
       <div>Выбрать разделитель
         <select id="separator" name="separator" onchange="separator()">
           <option value=";">;</option>
@@ -40,7 +40,7 @@
       </div>
       </div>
       <br>
-      <div id="reg">
+      <div id="but">
       <div>Загрузить обучающую выборку</div>
       <label class="input-file">
         <input type="file" name="file" id = "fileInput" type="file" accept=".CSV" onchange="fileInput()">		
@@ -50,29 +50,32 @@
       <br>
       <textarea wrap="off" id="userInput" placeholder="Введите обучающую выборку"></textarea>
       <br>
-      <div id="reg">
-      <div>
-        <input name="alg" type="radio" id="id3" value="id3"/>
-        <label for="id3">ID3</label>
-      </div>
-      <div>
-        <input name="alg" type="radio" id="cart" value="cart" checked/>
-        <label for="cart">CART</label>
-      </div>
+      <div id="but">
+        <div class="form_radio_group">
+          <div class="form_radio_group-item">
+            <input name="alg" type="radio" id="id3" value="id3"/>
+            <label for="id3">ID3</label>
+          </div>
+          <div class="form_radio_group-item">
+            <input name="alg" type="radio" id="cart" value="cart" checked/>
+            <label for="cart">CART</label>
+          </div>
+          
+        </div>
     </div>
     <br>
-      <div id="reg">
+      <div id="but">
         <div>Максимальная глубина</div>
             <input id="maxDepth" type="range" min="3" max="100" step="1" value="8" oninput="outPut.value = this.value"/><output id="outPut">8</output>
         </div>
       <br>
       <button id = "buildDecisionTree" onclick="buildDecisionTree()">Построить дерево</button>
       <br>
-      <input type="text" id="userInput" placeholder="Введите данные для обхода по дереву" style="border-radius:10px;border: 0.3px solid grey;">
+      <input type="text" id="findUserInput" placeholder="Введите данные для обхода по дереву" style="border-radius:10px;border: 0.3px solid grey;">
       <br>
       <button id = "bypassDecisionTree" onclick="bypassDecisionTree()">Обход по дереву</button>
       <br>
-      <button id = "deleteDecisionTree" onclick="delteDecisionTree()">Удалить дерево</button>
+      <button id = "deleteDecisionTree" onclick="deleteDecisionTree()" >Очистить</button>
     </div>
   </div>
   <audio src="oleg-kenzov-raketa-bomba-petarda.mp3" id="audio" loop="loop"></audio>
@@ -81,6 +84,6 @@
     <button onclick="pause()"></button>
     <button onclick="volume()"></button>
   </div>
-  <script src="cart.js" ></script>
+  <script src="decisionTree.js" ></script>
 </body>
 </html>

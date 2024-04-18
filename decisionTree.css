@@ -24,7 +24,7 @@
 	text-align: center;
 	border-radius: 4px;
 	background-color: #2f2f2f;
-	height: 30px;
+	height: 40px;
 	padding: 10px 15px;
 	box-sizing: border-box;
 	border: none;
@@ -110,12 +110,23 @@ vertical-align: top;
 .tree li:first-child:before {left: 50%;}
 .tree li:last-child:before {right: 50%;}
 .tree code, .tree span {
-    border: solid .1em #666;
-    border-radius: .2em;
-    display: inline-block;
-    margin: 0 .2em .5em;
-    padding: .2em .5em;
-    position: relative;
+  padding: 14px 10px;
+  background-color: #2f2f2f;
+  border: 0px solid #000000;
+  border-radius: 10px; 
+  color: #fff;
+  font-family: Trebuchet MS;
+  font-size: 17px;
+  font-weight: 400;
+  font-style: italic;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+  
+  display: inline-block;
+  margin: 0 .2em .5em;
+  padding: .2em .5em;
+  position: relative;
 }
 .tree ul:before,
 .tree code:before,
@@ -127,12 +138,17 @@ vertical-align: top;
     position: absolute;
 }
 .tree ul:before {
-    top: -.5em;
+    top: -.6em;
 }
 .tree code:before,
 .tree span:before {
-    top: -.55em;
+    top: -.4em;
+    content: "";
 }
+.tree>li:last-child:before 
+  {
+    content: '';
+  }
 .tree > li {margin-top: 0;}
 .tree > li:before,
 .tree > li:after,
@@ -192,18 +208,7 @@ body{
     flex-direction: column;
     max-height: 500px;
   }
-  @media screen and (max-width: 800px) {
-    #settings {
-      max-height: 300px; /* изменяем высоту столбца при сжатии экрана */
-    }
-  }
-  
-  @media screen and (max-width: 600px) {
-    #settings {
-      max-height: 200px; /* дополнительное изменение высоты столбца при сжатии экрана */
-    }
-  }
-  #buildDecisionTree, #bypassDecisionTree, #separator, #deleteDecisionTree{
+  #buildDecisionTree, #bypassDecisionTree, #separator, #deleteDecisionTree, #deleteData{
     background-color: #2f2f2f;
     color: #fff;
     font-family: Trebuchet MS;
@@ -215,10 +220,76 @@ body{
     border: 0px solid #000000;
     border-radius: 10px;
     display: inline-block;
-    margin-bottom: 1px; 
     height: 50px; 
     white-space: nowrap;
     text-align: center; 
+    flex: 1 1 auto;
+    margin: 0 5px;
+  }
+  .form_radio_group {
+    display: inline-block;
+    overflow: hidden;
+  }
+  .form_radio_group-item {
+    display: inline-block;
+    float: left;    
+  }
+  .form_radio_group input[type=radio] {
+    display: none;
+  }
+  .form_radio_group label {
+    display: inline-block;
+    cursor: pointer;
+    padding: 0px 15px;
+    line-height: 34px;
+    border: 1px solid #999;
+    border-right: none;
+    user-select: none;
+  }
+  /* полоса прокрутки (скроллбар) */
+  #tree::-webkit-scrollbar-corner {
+    background-color: black
+  }
+  #tree::-webkit-scrollbar {
+    width: 15px; /* Ширина всего элемента навигации */
+  }
+  
+  #tree::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: black; /* Цвет дорожки */
+  }
+  
+  #tree::-webkit-scrollbar-thumb {
+    background-color: #01bdab; /* Цвет бегунка */
+    border-radius: 20px; /* Округление бегунка */
+    border: 3px solid #01bdab; /* Оформление границ бегунка */
+  }
+  #tree::-webkit-scrollbar-thumb:hover {
+    background-color: #09A494; /* Цвет бегунка */
+    border: 3px solid #09A494;
+  }
+  .form_radio_group .form_radio_group-item:first-child label {
+    border-radius: 6px 0 0 6px;
+  }
+  .form_radio_group .form_radio_group-item:last-child label {
+    border-radius: 0 6px 6px 0;
+    border-right: 1px solid #999;
+  }
+   
+  /* Checked */
+  .form_radio_group input[type=radio]:checked + label {
+    background: #01bdab;
+  }
+   
+  /* Hover */
+  .form_radio_group label:hover {
+    color: #666;
+  }
+   
+  /* Disabled */
+  .form_radio_group input[type=radio]:disabled + label {
+    background: #efefef;
+    color: #666;
   }
   input[type=range] {
     -webkit-appearance: none;
@@ -237,7 +308,7 @@ body{
     background: #01bdab;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
   }
-  #reg {
+  #but {
     padding: 14px 10px;
     background-color: #2f2f2f;
     border: 0px solid #000000;
@@ -249,14 +320,16 @@ body{
     font-style: italic;
     text-decoration: none;
     text-align: center;
-    max-height: 50px;
+    height: 30px;
     white-space: nowrap;
+    flex: 1 1 auto;
+    margin: 0 5px;
   }
   
-  #buildDecisionTree:hover, #bypassDecisionTree:hover, #separator:hover, #deleteDecisionTree:hover{
+  #buildDecisionTree:hover, #bypassDecisionTree:hover, #separator:hover, #deleteDecisionTree:hover, #deleteData:hover{
     background-color: #5c5c5c;
   }
   
-  #buildDecisionTree:active, #bypassDecisionTree:active, #deleteDecisionTree:active{
+  #buildDecisionTree:active, #bypassDecisionTree:active, #deleteDecisionTree:active, #deleteData:active{
     transform: scale(0.95);
   }

@@ -8,34 +8,53 @@ class Node {
         this.indexForSearch = indexForSearch;
     }
 }
-let data, depth, maxDepth, attrs, attrsForSearch;
+let data = [], depth, maxDepth, attrs, attrsForSearch;
 let treeRoot = new Node;
 
 let change = document.getElementById('separator').value;
 function separator() {
   change = document.getElementById('separator').value;
 }
-function fileInput(){
-    const file = document.getElementById("fileInput");
-    let reader = new FileReader();
-    reader.readAsText(file.files[0]);
-    reader.onload = function () {
-        treeRoot = new Node;
-        clear();
-        clearPath(treeRoot);
+function deleteDecisionTree(){
+    treeRoot = new Node;
+    reader = null;
+    data = [];
+    document.getElementById("userInput").value = "";
+    document.getElementById("userInput").placeholder = "Введите обучающую выборку"
+    document.getElementById("userInput").disabled = false;
+    document.getElementById("fileInput").disabled = false;
 
-        let lines = reader.result.split('\r\n');
-        attrs = lines[0].split(change);
-        attrsForSearch = lines[0].split(change);
-        data = new Array(lines.length - 2);
-        for (let i = 1; i < lines.length - 1; i++)
-        {
-            data[i - 1] = lines[i].split(change);
+    clear();
+    clearPath(treeRoot);
+}
+function readData(lines){
+    attrs = lines[0].split(change);
+    attrsForSearch = lines[0].split(change);
+    for (let i = 1; i < lines.length; i++)
+    {
+        if (lines[i] != ""){
+            data.push(lines[i].split(change));
         }
+    }
+    if (data.length != 0){
         dataProcessing();
     }
-    reader.error = function(){
-        alert("error");
+
+}
+let reader;
+function fileInput(){
+    const file = document.getElementById("fileInput");
+    reader = new FileReader();
+    if (file.files[0] != null){
+        reader.readAsText(file.files[0]);
+        reader.onload = function () {
+            document.getElementById("userInput").value = "";
+            document.getElementById("userInput").disabled = true;
+            document.getElementById("userInput").placeholder = "Чтобы ввести данные, \nнажмите кнопку Очистить";
+        }
+        reader.error = function(){
+            alert("error");
+        }
     }
 }
 function dataProcessing(){
@@ -70,6 +89,7 @@ function dataProcessing(){
         }
         //удаление неудачных для разделения атрибутов
         if (data.length / unique.length < 1.5 && ((typeof(unique[0]) == "string") || numberingCheck(unique))){
+            console.log(typeof(unique[0]),numberingCheck(unique),unique)
             for (let j = 0; j < data.length; j++){
                 data[j].splice(i,1);
             }
@@ -136,13 +156,29 @@ function getProportion(curData, clas) {
 }
 
 function buildDecisionTree(){
-    if (data == null || data.length == 1){
-        alert("Некорректные данные")
+    data = [];
+    if (reader != null){
+        let lines = reader.result.split('\r\n');
+        readData(lines);
+    }
+    if (data.length <= 1 || data[0].length <= 1){
+        if(document.getElementById("userInput").value != ""){
+            data = [];
+            readData(document.getElementById("userInput").value.split("\n"));
+            if (data.length > 1 && data[0].length > 1){
+                document.getElementById("fileInput").disabled = true;
+            }
+        }
+    }
+    if (data.length <= 1 || data[0].length <= 1){
+        alert("Некорректные данные");
+        deleteDecisionTree();
     }
     else{
         depth = 1;
         maxDepth = document.getElementById('maxDepth').value;
 
+        treeRoot = new Node();
         clear();//очистка поля
         clearPath(treeRoot); //очистка пути обхода
 
@@ -153,11 +189,11 @@ function buildDecisionTree(){
         display(treeRoot, document.getElementById("root"));//отображение
     }
 }
+
 function display(curNode, treeElement) {
     
     let newBranch = document.createElement("li");//создание ответвления от вершины
     let newBranchText = document.createElement("span");//элемент для текста
-    newBranchText.style.backgroundColor = 'white';
     if (curNode.leafVal == null) {//заполнение текста
         let sign = (typeof(curNode.val)=="string") ? '=' : '>';
         newBranchText.textContent = `${attrsForSearch[curNode.indexForSearch]} ${sign} ${curNode.val}`;
@@ -165,7 +201,7 @@ function display(curNode, treeElement) {
         newBranchText.textContent = `${curNode.leafVal}`;
     }
     if (curNode.path) {//окраска пути обхода
-        newBranchText.style.backgroundColor = "SkyBlue";
+        newBranchText.style.backgroundColor = '#01bdab';
     }
     newBranch.appendChild(newBranchText);//добавление текста в ответвление
     treeElement.appendChild(newBranch);//добавление ответвления
@@ -251,19 +287,25 @@ function getBranches(curNode, depth) {
 }
 function getLeaf(curData) {
     let res = getRes(curData);
+    let sign = "=";
     let classesRes = getClassesRes([curData]);
     let count = new Array (classesRes.length).fill(0);
     for (let i = 0; i < classesRes.length; i++){//нахождение количества ответов
         for (let j = 0; j < res.length; j++){
-            if (res[j] == classesRes[i]){
+            if ((isNaN(parseFloat(data[0][data[0].length - 1])) || classesRes.length == 1 || getClassesRes(data).length <= 3) && res[j] == classesRes[i]){
                 count[i]++;
+            }
+            else if (!isNaN(parseFloat(data[0][data[0].length - 1])) && classesRes.length != 1 && getClassesRes(data).length > 3 && res[j] > classesRes[i]){
+                count[i]++;
+                sign = ">";
             }
         }
     }
     let leaf = new Node();
     //leaf.leafVal = Math.max.apply(null,count) == Math.min.apply(null,count) && count.length != 1 || Math.max.apply(null,count) == 0? 
     //"unknown" : classesRes[count.indexOf(Math.max.apply(null,count))];//самый частовстречающийся ответ
-    leaf.leafVal = Math.max.apply(null,count) == 0? "unknown" : classesRes[count.indexOf(Math.max.apply(null,count))];//самый частовстречающийся ответ
+    leaf.leafVal = Math.max.apply(null,count) == 0?
+    `${attrs[attrs.length - 1]} = unknown `: `${attrs[attrs.length - 1]} ${sign} ${classesRes[count.indexOf(Math.max.apply(null,count))]}`;//самый частовстречающийся ответ
     return leaf;
 }
 function treeCutting(curNode) {
@@ -286,7 +328,7 @@ async function bypassDecisionTree(){
         alert("Постройте дерево")
     }
     else{
-        const userData = document.getElementById("userInput").value.split(change);//данные для обхода
+        const userData = document.getElementById("findUserInput").value.split(change);//данные для обхода
         let curNode = treeRoot;//начало обхода
         clearPath(treeRoot);
         if (userData != ""){

@@ -15,7 +15,7 @@ class attrBranch {
     }
 }
 
-let data, treeRoot, depth, maxDepth;
+let data = [], treeRoot, depth, maxDepth;
 treeRoot = new Node;
 const leafAttr = new attrBranch("leaf", null, null);
 
@@ -23,25 +23,40 @@ let change = document.getElementById('separator').value;
 function separator() {
   change = document.getElementById('separator').value;
 }
-function fileInput(){
-    const file = document.getElementById("fileInput");
-    let reader = new FileReader();
-    reader.readAsText(file.files[0]);
-    reader.onload = function () {
-        treeRoot = new Node;
-        treeRoot.branches = 0;
-        clear();
-        clearPath(treeRoot);
+function deleteDecisionTree(){
+    treeRoot = new Node;
+    data = [];
+    reader = null;
+    document.getElementById("userInput").value = "";
+    document.getElementById("userInput").placeholder = "Введите обучающую выборку"
+    document.getElementById("userInput").disabled = false;
+    document.getElementById("fileInput").disabled = false;
 
-        let lines = reader.result.split('\r\n');
-        data=new Array(lines.length - 1);
-        for (let i = 0; i < lines.length - 1; i++)
-        {
-            data[i] = lines[i].split(change);
+    clear();
+    clearPath(treeRoot);
+}
+function readData(lines){
+    for (let i = 0; i < lines.length; i++)
+    {
+        if (lines[i] != ""){
+            data.push(lines[i].split(change));
         }
     }
-    reader.error = function(){
-        alert("error");
+}
+let reader;
+function fileInput(){
+    const file = document.getElementById("fileInput");
+    reader = new FileReader();
+    if (file.files[0] != null){
+        reader.readAsText(file.files[0]);
+        reader.onload = function () {
+            document.getElementById("userInput").value = "";
+            document.getElementById("userInput").disabled = true;
+            document.getElementById("userInput").placeholder = "Чтобы ввести данные, \nнажмите кнопку Очистить";
+        }
+        reader.error = function(){
+            alert("error");
+        }
     }
 }
 
@@ -118,7 +133,7 @@ function sortAttributes() {
     let attributes = [];
     for (let i = 0; i < data[0].length - 1; i++) {
         if (informationGain(getCol(data, i),i) != -1){
-            attributes.push(new attrBranch(data[0][i],i,informationGain(getCol(data, i),i)));
+            attributes.push(new attrBranch(data[0][i], i, informationGain(getCol(data, i),i)));
         }
     }
     return attributes.sort(compare);
@@ -156,18 +171,37 @@ function clearPath(curNode) {
 }
 
 function buildDecisionTree(){
-    if (data == null || data.length == 1){
-        alert("Некорректные данные")
+    data = [];
+    if (reader != null){
+        let lines = reader.result.split('\r\n');
+        readData(lines);
+    }
+    if (data.length <= 1 || data[0].length <= 1){
+        if(document.getElementById("userInput").value != ""){
+            data = [];
+            readData(document.getElementById("userInput").value.split("\n"));
+            if (data.length > 1 && data[0].length > 1){
+                document.getElementById("fileInput").disabled = true;
+            }
+        }
+    }
+    if (data.length <= 1 || data[0].length <= 1){
+        alert("Некорректные данные");
+        deleteDecisionTree();
     }
     else{
         depth = 1;
         maxDepth = document.getElementById('maxDepth').value;
+
+        treeRoot = new Node();
         clear();//очистка поля
         clearPath(treeRoot); //очистка пути обхода
 
         treeRoot = make();//построение
-        treeCutting(treeRoot);//сокращение дерева
-        display(treeRoot, document.getElementById("root"));//отображение
+        if (treeRoot != null){
+            treeCutting(treeRoot);//сокращение дерева
+            display(treeRoot, document.getElementById("root"));//отображение
+        }
     }
 }
 async function bypassDecisionTree(){
@@ -175,7 +209,7 @@ async function bypassDecisionTree(){
         alert("Постройте дерево")
     }
     else{
-        const userData = document.getElementById("userInput").value.split(change);//данные для обхода
+        const userData = document.getElementById("findUserInput").value.split(change);//данные для обхода
         let curNode = treeRoot;//начало обхода
         clearPath(treeRoot);
         while (curNode != null) {
@@ -187,22 +221,27 @@ async function bypassDecisionTree(){
 
 function make() {
     let attributes = sortAttributes();//сортировка атрибутов
-    console.log(attributes);
-    let root = new Node("root", attributes[0], "root");//корень
-    let queue = [root];//очередь вершин с корнем
-    getBranches(queue, attributes);//ветки
-    getLeaves(root, data);//листья
+    if (attributes.length == 0){
+        alert("Некорректные данные");
+        deleteDecisionTree();
+        return null;
+    }
+    else{
+        let root = new Node("root", attributes[0], "root");//корень
+        let queue = [root];//очередь вершин с корнем
+        getBranches(queue, attributes);//ветки
+        getLeaves(root, data);//листья
 
-    return root;
+        return root;
+    }
 }
 function display(curNode, treeElement) {
  
     let newBranch = document.createElement("li");//создание ответвления от вершины
     let newBranchText = document.createElement("span");//элемент для текста
-    newBranchText.style.backgroundColor = 'white';
     newBranchText.textContent = curNode.name;//заполнение текста
     if (curNode.path) {//окраска пути обхода
-        newBranchText.style.backgroundColor = "SkyBlue";
+        newBranchText.style.backgroundColor = '#01bdab';
     }
     newBranch.appendChild(newBranchText);//добавление текста в ответвление
     treeElement.appendChild(newBranch);//добавление ответвления
@@ -216,7 +255,7 @@ function display(curNode, treeElement) {
     }
 }
 
-function getBranches(queue, attributes) {
+function getBranchesID3(queue, attributes) {
     let curIndex = 1;//индекс добавляемой вершины
     while (queue.length != 0 && curIndex < attributes.length) {
         let curNode = queue.shift();//извлечение вершины
