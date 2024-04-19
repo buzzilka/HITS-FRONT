@@ -1,40 +1,48 @@
-function getRandomColor() {
-    return '#'+(Math.random()*0xFFFFFF<<0).toString(16);
-}
-
-function generateUniqueColors(count) {
-    const colors = [];
-    while (colors.length < count) {
-        const color = getRandomColor();
-        if (!colors.includes(color)) {
-            colors.push(color);
+function weightedRandom(weights) {
+    const total = weights.reduce((acc, val) => acc + val, 0);
+    const rnd = Math.random() * total;
+    
+    let sum = 0;
+    for (let i = 0; i < weights.length; i++) {
+        sum += weights[i];
+        if (rnd < sum) {
+            return i;
         }
     }
-    return colors;
+    
+    return weights.length - 1;
 }
 
-function cluster(clusterCount, points, canvas, ctx) {
-    let clusters = [];
-    
-    const uniqueColors = generateUniqueColors(clusterCount);
+function distance(point1, point2) {
+    return Math.sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2);
+}
 
-    for (let i = 0; i < clusterCount; i++) {
-        clusters.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            points: [],
-            color: uniqueColors[i] 
+function initializeCentroidsKMeansPP(points, k) {
+    const centroids = [points[Math.floor(Math.random() * points.length)]];
+
+    while (centroids.length < k) {
+        let distances = points.map(point => {
+            let minDistance = centroids.reduce((min, centroid) => {
+                return Math.min(min, distance(point, centroid));
+            }, Infinity);
+            return minDistance;
         });
+
+        let nextCentroid = points[weightedRandom(distances)];
+        centroids.push(nextCentroid);
     }
-    
-    function distance(point1, point2) {
-        return Math.sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2);
-    }
-    
+
+    return centroids;
+}
+
+function kMeans(points, ctx,clusterCount, colors) {
+    const centroids = initializeCentroidsKMeansPP(points, clusterCount);
+    let clusters = centroids.map((centroid, i) => ({ x: centroid.x, y: centroid.y, points: [], color: colors[i] }));
+
     points.forEach(point => {
         let minDistance = Number.MAX_VALUE;
         let closestCluster = null;
-        
+
         clusters.forEach(cluster => {
             let dist = distance(point, cluster);
             if (dist < minDistance) {
@@ -42,29 +50,19 @@ function cluster(clusterCount, points, canvas, ctx) {
                 closestCluster = cluster;
             }
         });
-        
+
         closestCluster.points.push(point);
     });
-    
+
     clusters.forEach(cluster => {
         if (cluster.points.length > 0) {
-            let sumX = 0, sumY = 0;
-            for (let point of cluster.points) {
-                sumX += point.x;
-                sumY += point.y;
-            }
-            cluster.x = sumX / cluster.points.length;
-            cluster.y = sumY / cluster.points.length;
+            let sum = cluster.points.reduce((acc, point) => ({ x: acc.x + point.x, y: acc.y + point.y }), { x: 0, y: 0 });
+            cluster.x = sum.x / cluster.points.length;
+            cluster.y = sum.y / cluster.points.length;
         }
     });
-    
-    ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
     clusters.forEach(cluster => {
-        ctx.fillStyle = cluster.color;
-        ctx.beginPath();
-        ctx.arc(cluster.x, cluster.y, 10, 0, Math.PI * 2);
-        ctx.fill();
-        
         cluster.points.forEach(point => {
             ctx.fillStyle = cluster.color;
             ctx.beginPath();
@@ -74,4 +72,4 @@ function cluster(clusterCount, points, canvas, ctx) {
     });
 }
 
-export { cluster };
+export { kMeans };

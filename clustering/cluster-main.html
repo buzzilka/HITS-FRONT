@@ -1,33 +1,38 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
+<link rel="stylesheet" href="cluster-main.css">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        canvas {
-            background-color: rgba(132, 142, 156, 0.3);
-            height: 600px;
-            width: 1000px;
-            cursor: pointer;
-            border: 3px solid gray;
-            display: block;
-            margin: 0 auto;
-        }
-
-        button {
-            cursor: pointer;
-            font-size: 20px;
-        }
-    </style>
+    <title>Кластеризация</title>
 </head>
 <body>
-    <h1><center>Алгоритм кластеризации</center></h1>
-    <canvas id="canvas" width="1000" height="600"></canvas>
-    <input type="number" id="clusterNums" />
-    <button onclick="getClusterNums()">Количество кластеров</button>
-    <button onclick="startAlg()">Запустить алгоритм</button>
-    <button onclick="clearCanvas()">Очистить</button> 
-    <script src="cluster-main.js" type="module"></script>
+    <div class="topnav">
+        <a href="/HITS-FRONT/main/main-page.html">Главная</a>
+        <a href="">Генетический Алгоритм</a>
+        <a href="">Муравьиный Алгоритм</a>
+        <a href="/HITS-FRONT/a-star/Aalg.html">Алгоритм A*</a>
+        <a href="/HITS-FRONT/clustering/cluster-main.html">Кластеризация</a>
+        <a href="/HITS-FRONT/neural-network/nnetwork.html">Нейронная Сеть</a>
+        <a href="">Дерево решений</a>
+        <a href="">Авторы</a>
+    </div>
+    <div class="container">
+        <canvas id="canvas" width="1000" height="600"></canvas>
+    </div>
+    <div class="btn-container">
+        <button id = 'buttonClear'>Очистить</button>
+        <button id = 'buttonStart' onclick="startAlgs()">Старт</button>
+    </div>
+    <div class="ranges">
+        <input type="range" id="rangeKMeans" min="1" max="10" step="1" value ="3">
+        <span id="rangeValueK" value = "Количество кластеров: 3"></span>
+        <input type="range" id="rangeCMeans" min="1" max="10" step="1" value ="3">
+        <span id="rangeValueC" value = "Количество кластеров: 3"></span>
+        <input type="range" id="rangeHierarchical" min="1" max="10" step="1" value ="3">
+        <span id="rangeValueHierarchical" value = "Количество кластеров: 3"></span>
+    </div>
+    </div>
+    <script type="module" src="cluster-main.js"></script>
 </body>
 </html>
