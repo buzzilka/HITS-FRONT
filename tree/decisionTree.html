@@ -5,13 +5,6 @@
     <title>Дерево решений</title>
     <link href="decisionTree.css" rel="stylesheet">
   </head>
-  <style>
-  .tree {
-    display: table;
-    margin: 0 auto;
-    padding: 0;
-  }
-  </style>
 
 <body>
   <div class="topnav">
@@ -33,7 +26,7 @@
     <div id="settings">
 
       <div id="but">Выбрать разделитель
-        <select id="separator" name="separator" onchange="separator()">
+        <select id="separator" name="separator">
           <option value=";">;</option>
           <option value=",">,</option>
           <option value=" ">space</option>
@@ -43,7 +36,7 @@
       <div id="but">
         <div>Загрузить обучающую выборку</div>
         <label class="input-file">
-          <input type="file" name="file" id = "fileInput" type="file" accept=".CSV" onchange="fileInput()">		
+          <input type="file" name="file" id = "fileInput" type="file" accept=".CSV" >		
           <span>Выберите файл</span>
         </label>
       </div>
@@ -68,18 +61,18 @@
         <input id="maxDepth" type="range" min="3" max="100" step="1" value="8" oninput="outPut.value = this.value"/><output id="outPut">8</output>
       </div>
 
-      <button id = "buildDecisionTree" onclick="buildDecisionTree()">Построить дерево</button>
+      <button id = "buildDecisionTree">Построить дерево</button>
 
       <input type="text" id="findUserInput" placeholder="Введите данные для обхода по дереву">
 
-      <button id = "bypassDecisionTree" onclick="bypassDecisionTree()">Обход по дереву</button>
+      <button id = "bypassDecisionTree">Обход по дереву</button>
 
-      <button id = "deleteDecisionTree" onclick="deleteDecisionTree()" >Очистить</button>
+      <button id = "deleteDecisionTree">Очистить</button>
 
     </div>
 
   </div>
 
-  <script src="decisionTree.js" ></script>
+  <script src="main.js" type="module" defer></script>
 </body>
 </html>
