@@ -36,12 +36,12 @@ function separator() {
   change = document.getElementById('separator').value;
 }
 
-function deleteDecisionTree(f=true){
-    if (f) document.getElementById("userInput").value = "";
+function deleteDecisionTree(){
 
     data = [];
     reader = null;
     clear();
+    document.getElementById("userInput").value = "";
     document.getElementById("fileInput").value = "";
     document.getElementById("userInput").value = "";
     document.getElementById("findUserInput").value = "";
@@ -632,7 +632,6 @@ function getLeaf(curData) {
     let count = new Array (classesRes.length).fill(0);
     for (let i = 0; i < classesRes.length; i++){//нахождение количества ответов
         for (let j = 0; j < res.length; j++){
-            console.log(parseFloat(data[0][data[0].length - 1]),classesRes.length, getClassesRes([data]).length)
             if ((isNaN(parseFloat(data[0][data[0].length - 1])) || classesRes.length == 1 || getClassesRes([data]).length <= 3) && res[j] == classesRes[i]){
                 count[i]++;
             }
@@ -677,7 +676,8 @@ function buildDecisionTreeCART(){
     }
     if (data.length <= 1 || data[0].length <= 1){
         alert("Некорректные данные");
-        deleteDecisionTree(false);
+        document.getElementsByName("alg")[0].disabled = false;
+        document.getElementsByName("alg")[1].disabled = false;
     }
     else{
         depth = 1;
@@ -699,7 +699,8 @@ function buildDecisionTreeID3(){
         let attributes = sortAttributes();//сортировка атрибутов
         if (attributes.length == 0){
             alert("Некорректные данные");
-            deleteDecisionTree(false);
+            document.getElementsByName("alg")[0].disabled = false;
+            document.getElementsByName("alg")[1].disabled = false;
             return null;
         }
         else{
@@ -728,7 +729,8 @@ function buildDecisionTreeID3(){
     }
     if (data.length <= 1 || data[0].length <= 1){
         alert("Некорректные данные");
-        deleteDecisionTree(false);
+        document.getElementsByName("alg")[0].disabled = false;
+        document.getElementsByName("alg")[1].disabled = false;
     }
     else{
         depth = 1;
