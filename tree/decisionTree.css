@@ -208,7 +208,7 @@ textarea::-webkit-scrollbar-track {
   transform: scale(0.95);
 }
 
-#but {
+.but {
   padding: 14px 10px;
   background-color: #2f2f2f;
   border: 0px solid #000000;
