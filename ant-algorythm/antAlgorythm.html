@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="antAlgorythm.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Муравьиный алгоритм</title>
+</head>
+<style>
+    label{
+        font-family: Trebuchet MS;
+        font-size: 20px;
+        font-style: italic;
+        text-decoration: none;
+    }
+</style>
+<body>
+    <div class="topnav">
+        <a href="/HITS-FRONT/main/main-page.html">Главная</a>
+        <a href="/HITS-FRONT/Genetic algorithm/genetic.html">Генетический Алгоритм</a>
+        <a href="/HITS-FRONT/Ant algorithm/antAlgorythm.html">Муравьиный Алгоритм</a>
+        <a href="/HITS-FRONT/a-star/Aalg.html">Алгоритм A*</a>
+        <a href="/HITS-FRONT/clustering/cluster-main.html">Кластеризация</a>
+        <a href="/HITS-FRONT/neural-network/nnetwork.html">Нейронная Сеть</a>
+        <a href="">Дерево решений</a>
+        <a href="">Авторы</a>
+    </div>
+
+    <div class="container">
+        <canvas id="canvas" height=650px width=650px></canvas>
+        <div id="settings">
+            <div>
+                <center><label>Количество итераций</label></center><input class="slider" id="iteration_count" type="range" min="10" max="3000" step="1" value="50" oninput="firstOutPut.value = this.value"/>
+                <center><output id="firstOutPut">50</output></center>
+            </div>
+            <button id="first" onclick="start()">Старт</button>
+            <button id="second" onclick="clear()">Очистить</button>
+            <button id="third" onclick="toBack()">Ctrl+z</button>
+        </div>
+    </div>
+    <script src="antAlgorytm.js" type="module"></script>
+</body>
+</html>
