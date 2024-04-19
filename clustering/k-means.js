@@ -1,16 +1,3 @@
-const colors = [
-    'red',
-    'blue',
-    'lime',
-    'pink',
-    'yellow',
-    'purple',
-    'orangered',
-    'mediumspringgreen',
-    'khaki',
-    'indigo'
-];
-
 function weightedRandom(weights) {
     const total = weights.reduce((acc, val) => acc + val, 0);
     const rnd = Math.random() * total;
@@ -48,7 +35,7 @@ function initializeCentroidsKMeansPP(points, k) {
     return centroids;
 }
 
-function kMeans(clusterCount, points, ctx) {
+function kMeans(points, ctx,clusterCount, colors) {
     const centroids = initializeCentroidsKMeansPP(points, clusterCount);
     let clusters = centroids.map((centroid, i) => ({ x: centroid.x, y: centroid.y, points: [], color: colors[i] }));
 

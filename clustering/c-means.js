@@ -19,9 +19,8 @@ function updateClusterCenters(points, memberships, numClusters,fuzzyNum) {
 
 function fuzzyCMeans(points, numClusters, fuzzyNum, maxIterations) {
     const memberships = [];
-    const epsilon = 0.01;
+    const epsilon = 0.001;
 
-    // Initialize memberships randomly
     for (let i = 0; i < points.length; i++) {
         const membership = [];
         let total = 0;
@@ -42,7 +41,6 @@ function fuzzyCMeans(points, numClusters, fuzzyNum, maxIterations) {
     while (iteration < maxIterations && (prevClusterCenters === null || distance(prevClusterCenters, clusterCenters) > epsilon)) {
         prevClusterCenters = clusterCenters;
 
-        // Update memberships
         for (let i = 0; i < points.length; i++) {
             const distances = [];
             for (let j = 0; j < numClusters; j++) {
@@ -57,7 +55,6 @@ function fuzzyCMeans(points, numClusters, fuzzyNum, maxIterations) {
             }
         }
 
-        // Update cluster centers
         clusterCenters = updateClusterCenters(points, memberships, numClusters,fuzzyNum);
 
         iteration++;
@@ -66,25 +63,11 @@ function fuzzyCMeans(points, numClusters, fuzzyNum, maxIterations) {
     return { clusterCenters, memberships };
 }
 
-function drawClusters(ctx, points, memberships, clusterCenters) {
+function drawClusters(ctx, points, memberships, colors) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const connectedPoints = {}; // Для отслеживания уже соединенных точек
+    const connectedPoints = {}; 
 
-    // Массив доступных цветов
-    const colors = [
-        'red',
-        'blue',
-        'lime',
-        'pink',
-        'yellow',
-        'purple',
-        'orangered',
-        'mediumspringgreen',
-        'khaki',
-        'indigo'
-    ];
-
-    let colorIndex = 0; // Индекс текущего цвета
+    let colorIndex = 0; 
 
     for (let i = 0; i < points.length; i++) {
         let maxMembership = 0;
@@ -96,17 +79,15 @@ function drawClusters(ctx, points, memberships, clusterCenters) {
             }
         }
 
-        // Соединяем точки внутри одного кластера
         if (!connectedPoints[maxIndex]) {
             connectedPoints[maxIndex] = [];
         }
         connectedPoints[maxIndex].push(points[i]);
     }
 
-    // Рисуем линии между точками внутри кластеров
     for (const clusterIndex in connectedPoints) {
         const clusterPoints = connectedPoints[clusterIndex];
-        const color = colors[colorIndex % colors.length]; // Выбор цвета из массива цветов
+        const color = colors[colorIndex % colors.length]; 
         ctx.strokeStyle = color;
 
         for (let i = 0; i < clusterPoints.length - 1; i++) {
@@ -116,7 +97,6 @@ function drawClusters(ctx, points, memberships, clusterCenters) {
             ctx.stroke();
         }
 
-        // Соединяем последнюю точку с первой, чтобы создать замкнутую фигуру
         if (clusterPoints.length > 1) {
             ctx.beginPath();
             ctx.moveTo(clusterPoints[clusterPoints.length - 1].x, clusterPoints[clusterPoints.length - 1].y);
@@ -124,13 +104,13 @@ function drawClusters(ctx, points, memberships, clusterCenters) {
             ctx.stroke();
         }
 
-        colorIndex++; // Переходим к следующему цвету
+        colorIndex++;
     }
 }
 
-function fCMeans(points,ctx, clusterCountCMeans, fuzzyNum, maxIterations){
+function fCMeans(points,ctx, clusterCountCMeans, fuzzyNum, maxIterations,colors){
     const result = fuzzyCMeans(points, clusterCountCMeans, fuzzyNum, maxIterations);
-    drawClusters(ctx, points, result.memberships, result.clusterCenters);
+    drawClusters(ctx, points, result.memberships,colors);
 }
 
 export {fCMeans};

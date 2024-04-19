@@ -22,12 +22,16 @@
     </div>
     <div class="btn-container">
         <button id = 'buttonClear'>Очистить</button>
-        <button onclick="startAlgs()">Старт</button>
+        <button id = 'buttonStart' onclick="startAlgs()">Старт</button>
     </div>
-    <input type="range" id="rangeKMeans" min="1" max="10" step="1" value ="3">
-    <span id="rangeValueK" value = "Количество кластеров: 3"></span>
-    <input type="range" id="rangeCMeans" min="1" max="10" step="1" value ="3">
-    <span id="rangeValueC" value = "Количество кластеров: 3"></span>
+    <div class="ranges">
+        <input type="range" id="rangeKMeans" min="1" max="10" step="1" value ="3">
+        <span id="rangeValueK" value = "Количество кластеров: 3"></span>
+        <input type="range" id="rangeCMeans" min="1" max="10" step="1" value ="3">
+        <span id="rangeValueC" value = "Количество кластеров: 3"></span>
+        <input type="range" id="rangeHierarchical" min="1" max="10" step="1" value ="3">
+        <span id="rangeValueHierarchical" value = "Количество кластеров: 3"></span>
+    </div>
     </div>
     <script type="module" src="cluster-main.js"></script>
 </body>

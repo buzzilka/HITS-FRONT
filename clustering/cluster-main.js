@@ -3,14 +3,30 @@ const ctx = canvas.getContext('2d');
 
 import { kMeans } from "./k-means.js";
 import { fCMeans } from "./c-means.js";
+import { hierarchical } from "./hierarchical.js";
 
 document.getElementById('rangeValueK').textContent = "Количество кластеров(K-Means): 3";
 document.getElementById('rangeValueC').textContent = "Количество кластеров(C-Means): 3";
+document.getElementById('rangeValueHierarchical').textContent = "Количество кластеров(Hierarchical): 3";
 
 let clusterCountKMeans = 3;
 let clusterCountCMeans = 3;
+let clusterCountHierarchical = 3;
 let fuzzyNum = 2;
-let maxIterations = 100;
+let maxIterations = 500;
+
+const colors = [
+    'red',
+    'blue',
+    'lime',
+    'pink',
+    'yellow',
+    'purple',
+    'orangered',
+    'mediumspringgreen',
+    'khaki',
+    'indigo'
+];
 
 document.getElementById("rangeKMeans").addEventListener("change", function() {
     clusterCountKMeans = this.value;
@@ -22,9 +38,15 @@ document.getElementById("rangeCMeans").addEventListener("change", function() {
     document.getElementById('rangeValueC').textContent = "Количество кластеров(C-Means): " + document.getElementById('rangeCMeans').value;
 });
 
-function startAlgs(){
-    fCMeans(points,ctx,clusterCountCMeans,fuzzyNum,maxIterations);
-    kMeans(clusterCountKMeans,points,ctx);
+document.getElementById("rangeHierarchical").addEventListener("change", function() {
+    clusterCountHierarchical = this.value;
+    document.getElementById('rangeValueHierarchical').textContent = "Количество кластеров(Hierarchical): " + document.getElementById('rangeHierarchical').value;
+});
+
+function startAlgs() {
+    fCMeans(points, ctx, clusterCountCMeans, fuzzyNum, maxIterations,colors);
+    kMeans(points, ctx, clusterCountKMeans, colors);
+    hierarchical(points,ctx,clusterCountHierarchical,colors);
 }
 
 const points = [];

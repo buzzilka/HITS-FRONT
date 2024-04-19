@@ -62,3 +62,73 @@ body{
 .topnav a.active {
     color: white;
 }
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#buttonStart, #buttonClear {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+#buttonStart {
+    background-color: #2f2f2f;
+    color: #fff;
+    font-family: Trebuchet MS;
+    font-size: 24px;
+    font-weight: 400;
+    font-style: italic;
+    text-decoration: none;
+    padding: 14px 50px;
+    border: 0px solid #000000;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+#buttonStart:hover{
+    background-color: #5c5c5c;
+}
+
+#buttonStart:active{
+    transform: scale(0.95);
+}
+
+#buttonClear{
+    background-color: #2f2f2f;
+    color: #fff;
+    font-family: Trebuchet MS;
+    font-size: 24px;
+    font-weight: 400;
+    font-style: italic;
+    text-decoration: none;
+    padding: 14px 50px;
+    border: 0px solid #000000;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+#buttonClear:hover{
+    background-color: #5c5c5c;
+}
+
+#buttonClear:active{
+    transform: scale(0.95);
+}
+
+.ranges {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    margin-top: 20px; 
+}
+
+.ranges input[type="range"] {
+    margin: 0 10px; 
+}
