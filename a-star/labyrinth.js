@@ -1,13 +1,46 @@
-export {cells, cellSize, num, getNum, drawGrid, drawLabyrinth, generateLabyrinth, setDefaultStartFinish, setStartFinish, clearLabyrinth, currentFinish, currentStart};
-import {ctx} from "../a-star/main.js";
+export {cells, num, getNum, display, currentFinish, currentStart, emptyLaby, laby, redact};
+import {ctx, isPending} from "../a-star/main.js";
 
 let cells;
 let num, cellSize;
 let currentStart, currentFinish;
+let change = document.getElementById('redact').value;
 
 function getNum(){
     num = document.getElementById('sizeLab').value;
     cellSize = canvas.width / num;
+}
+
+function laby(){
+    getNum();
+    clearLabyrinth();
+    generateLabyrinth();
+    //setDefaultStartFinish();
+    setStartFinish();
+    display();
+}
+function emptyLaby(){
+    getNum();
+    cells = new Array(num);
+    for (let i = 0; i < num; i++) {
+      cells[i]=new Array(num);//массив стен и коридоров
+      for (let j = 0; j < num; j++){
+        cells[i][j] = {typeOfEmpty:"empty", isWall:"empty"};
+      }
+    }
+    setDefaultStartFinish();
+    display();
+}
+
+function display()
+{
+  clear();
+  drawLabyrinth();
+  drawGrid();
+}
+
+function clear(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function drawGrid(){
@@ -170,6 +203,56 @@ function clearLabyrinth()
   }
 }
 
+canvas.addEventListener('click', function(event) {
+    if (num == null || isPending){
+      return;
+    }
+    else{
+      const rect = canvas.getBoundingClientRect();  //координаты клика
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      if (change === "walls"){
+        if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall === "wall"){
+          cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall = "empty";
+        }
+        else if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty === "start"||
+        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty === "finish"){
+          return;
+        }
+        else{
+          cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall = "wall";
+        }
+      }
+      if (change === "begin"){
+        if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall === "wall" || 
+        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty === "finish"){
+          return;
+        }
+        else if (cells[currentStart.y][currentStart.x].typeOfEmpty === "start"){
+        //убрать старый старт
+        cells[currentStart.y][currentStart.x].typeOfEmpty = currentStart.type;
+        }
+        //обозначить новый старт
+        currentStart={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty};
+        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty = "start";
+      }
+      if (change==="end"){
+        if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall === "wall" ||
+        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty === "start"){
+          return;
+        }
+        else if (cells[currentFinish.y][currentFinish.x].typeOfEmpty === "finish"){
+        cells[currentFinish.y][currentFinish.x].typeOfEmpty=currentFinish.type;
+        }
+        currentFinish = {x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty};
+        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty = "finish";  
+      }
+      display();
+    }
+});
 
+function redact() {
+    change = document.getElementById('redact').value;
+}
 
 

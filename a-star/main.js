@@ -1,55 +1,40 @@
-import {cells, cellSize, num, getNum, drawGrid, drawLabyrinth, generateLabyrinth, setDefaultStartFinish, setStartFinish, clearLabyrinth, currentFinish, currentStart} from "../a-star/labyrinth.js";
-export{ctx}
+import {cells, redact, num, display, currentFinish, currentStart, emptyLaby, laby} from "../a-star/labyrinth.js";
+export{ctx, isPending}
 
-document.getElementById("createLab").addEventListener("click", create);
-document.getElementById("emptyLab").addEventListener("click", emptyLab);
+document.getElementById("createLab").addEventListener("click", createLab);
+document.getElementById("emptyLab").addEventListener("click", createEmptyLab);
 document.getElementById("redact").addEventListener("change", redact);
 document.getElementById("start").addEventListener("click", start);
 document.getElementById("deletePath").addEventListener("click", deletePath);
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-let change = document.getElementById('redact').value;
 
 let isPending, flag = false;
 
-function create(){
-    flag = true;
-    getNum();
-    clearLabyrinth();
-    generateLabyrinth();
-    //setDefaultStartFinish();
-    setStartFinish();
-    display();
+function createLab(){
+  flag = true;
+  laby();
 }
 
-function emptyLab(){
+function createEmptyLab(){
     flag = true;
-    getNum();
-    cells = new Array(num);
-    for (let i = 0; i < num; i++) {
-      cells[i]=new Array(num);//массив стен и коридоров
-      for (let j = 0; j < num; j++){
-        cells[i][j] = {typeOfEmpty:"empty", isWall:"empty"};
-      }
-    }
-    setDefaultStartFinish();
-    display();
+    emptyLaby();
 }
 
 function start(){
-    if (num === null){
-      alert("Создайте лабиринт");
-    }
-    else if(isPending){
-      alert("Идёт поиск пути... Чтобы начать поиск сначала, очистите путь");
-    }
-    else{
-      clearPath();
-      display();
-      flag = false;
-      aStar();
-    }
+  if (num == null){
+    alert("Создайте лабиринт");
+  }
+  else if(isPending){
+    alert("Идёт поиск пути... Чтобы начать поиск сначала, очистите путь");
+  }
+  else{
+    clearPath();
+    display();
+    flag = false;
+    aStar();
+  }
 }
 
 function deletePath()
@@ -57,58 +42,6 @@ function deletePath()
   flag = true;
   clearPath();
   display();
-}
-
-canvas.addEventListener('click', function(event) {
-    if (num === null || isPending){
-      return;
-    }
-    else{
-      const rect = canvas.getBoundingClientRect();  //координаты клика
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      if (change === "walls"){
-        if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall === "wall"){
-          cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall = "empty";
-        }
-        else if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty === "start"||
-        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty === "finish"){
-          return;
-        }
-        else{
-          cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall = "wall";
-        }
-      }
-      if (change === "begin"){
-        if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall === "wall" || 
-        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty === "finish"){
-          return;
-        }
-        else if (cells[currentStart.y][currentStart.x].typeOfEmpty === "start"){
-        //убрать старый старт
-        cells[currentStart.y][currentStart.x].typeOfEmpty = currentStart.type;
-        }
-        //обозначить новый старт
-        currentStart={x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty};
-        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty = "start";
-      }
-      if (change==="end"){
-        if (cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].isWall === "wall" ||
-        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty === "start"){
-          return;
-        }
-        else if (cells[currentFinish.y][currentFinish.x].typeOfEmpty === "finish"){
-        cells[currentFinish.y][currentFinish.x].typeOfEmpty=currentFinish.type;
-        }
-        currentFinish = {x:Math.floor(x/cellSize),y:Math.floor(y/cellSize),type:cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty};
-        cells[Math.floor(y/cellSize)][Math.floor(x/cellSize)].typeOfEmpty = "finish";  
-      }
-      display();
-    }
-});
-
-function redact() {
-    change = document.getElementById('redact').value;
 }
 
 async function aStar(){
@@ -188,16 +121,6 @@ async function aStar(){
     isPending = false;
 }
 
-function display()
-{
-  clear();
-  drawLabyrinth();
-  drawGrid();
-}
-
-function clear(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
 function clearPath()
 {
     for (let y in cells) {
