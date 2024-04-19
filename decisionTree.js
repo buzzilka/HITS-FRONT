@@ -747,14 +747,3 @@ function buildDecisionTreeID3(){
         }
     }
 }
-
-let audio = document.getElementById('audio');
-function play() {
-    audio.play();
-}
-function pause() {
-    audio.pause();
-}
-function volume(){
-    audio.volume = Math.random();
-}
