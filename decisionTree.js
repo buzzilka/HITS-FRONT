@@ -132,7 +132,7 @@ function dataProcessing(){
                 unique.push(data[j][i]);
             }
         }
-        if (!areNums) {
+        if (!areNums || getClassesID3(unique).length <= 4) {
             for (let j = 0; j < data.length; j++){
                 data[j][i] = data[j][i].toString();//перевод дынных столбца в один тип
             }
@@ -632,10 +632,11 @@ function getLeaf(curData) {
     let count = new Array (classesRes.length).fill(0);
     for (let i = 0; i < classesRes.length; i++){//нахождение количества ответов
         for (let j = 0; j < res.length; j++){
-            if ((isNaN(parseFloat(data[0][data[0].length - 1])) || classesRes.length == 1 || getClassesRes(data).length <= 3) && res[j] == classesRes[i]){
+            console.log(parseFloat(data[0][data[0].length - 1]),classesRes.length, getClassesRes([data]).length)
+            if ((isNaN(parseFloat(data[0][data[0].length - 1])) || classesRes.length == 1 || getClassesRes([data]).length <= 3) && res[j] == classesRes[i]){
                 count[i]++;
             }
-            else if (!isNaN(parseFloat(data[0][data[0].length - 1])) && classesRes.length != 1 && getClassesRes(data).length > 3 && res[j] > classesRes[i]){
+            else if (!isNaN(parseFloat(data[0][data[0].length - 1])) && classesRes.length != 1 && getClassesRes([data]).length > 3 && res[j] > classesRes[i]){
                 count[i]++;
                 sign = ">";
             }
