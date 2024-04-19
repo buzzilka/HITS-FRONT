@@ -3,7 +3,7 @@ body{
     margin: 0;
     padding: 0;
     height: 100%;
-    background: linear-gradient(45deg, #b948fff3, #ff66f7,#020024);
+    background: linear-gradient(45deg, #b948fff3, #d457ce,#020024);
     background-size: 400% 400%;
     animation: gradient 10s ease infinite;
     font-family: sans-serif;
@@ -34,11 +34,17 @@ body{
     justify-content: center;
   }
   
-  #settings {
+#settings {
     margin-left: 10px;
-    margin-top: 397px;
     display: flex;
     flex-direction: column;
+    height: 300px;
+    gap: 5px;
+    margin-top: auto;
+}
+
+#settings>* {
+    flex: 1 1 160px;
 }
 
 #first, #second, #third {
@@ -53,13 +59,14 @@ body{
     border: 0px solid #000000;
     border-radius: 10px;
     display: inline-block;
+    cursor: pointer;
 }
 
 #second:hover, #first:hover, #third:hover{
     background-color: #5c5c5c;
 }
 
-#firs:active, #second:active, #third:active{
+#first:active, #second:active, #third:active{
     transform: scale(0.95);
 }
 
@@ -87,4 +94,52 @@ body{
 
 .topnav a.active {
     color: white;
+}
+
+#firstOutPut{
+    font-size: 16px;
+    font-style: italic;
+}
+
+.slider {
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background: #e2a3ff;
+    outline: none;
+    cursor: pointer;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+  
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    background: transparent;
+    background-image: url("ant.png");
+    cursor: pointer;
+    background-size: cover;
+    border-radius: 50%;
+    transition: .2s ease-in-out;
+    transform: rotateZ(var(--thumb-rotate, 0deg));
+}
+  
+.slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    background: transparent;
+    background-image: url("ant.png");
+    cursor: pointer;
+    background-size: cover;
+    border-radius: 50%;
+    transition: .2s ease-in-out;
+    transform: rotateZ(var(--thumb-rotate, 0deg));
 }

@@ -2,14 +2,14 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const points = [];
 const pheromone = 1;
-const for_path = 1500;
-const for_pheromones = 1000;
+const forPath = 1500;
+const forPheromones = 1000;
 const evaporation = 0.5;
 const alfa = 2;
 const beta = 20;
-let all_paths = [];
-let best_path = [];
-let count_of_iteration;
+let allPaths = [];
+let bestPath = [];
+let countOfIteration;
 let matrix = [];
 
 canvas.addEventListener('click', function(event) {
@@ -22,9 +22,9 @@ canvas.addEventListener('click', function(event) {
     drawPoints();
 });
 
-function get_count_iteration() {
+function getCountIteration() {
     let num = document.getElementById('iteration_count').value;
-    count_of_iteration = parseInt(num);
+    countOfIteration = parseInt(num);
 }
 
 function calcDistance(first, second) {
@@ -52,9 +52,9 @@ function drawPath(color) {
     ctx.strokeStyle = color;
     ctx.lineWidth = 5;
     ctx.beginPath();
-    for (let j = 0; j < best_path.length - 1; j++) {
-        ctx.moveTo(points[best_path[j]].x, points[best_path[j]].y);
-        ctx.lineTo(points[best_path[j + 1]].x, points[best_path[j + 1]].y);
+    for (let j = 0; j < bestPath.length - 1; j++) {
+        ctx.moveTo(points[bestPath[j]].x, points[bestPath[j]].y);
+        ctx.lineTo(points[bestPath[j + 1]].x, points[bestPath[j + 1]].y);
         ctx.stroke();
     }
     drawPoints();
@@ -73,46 +73,46 @@ function toBack() {
     drawPoints();
 }
 
-function get_matrix() {
+function getMatrix() {
     matrix = [];
     for(let i = 0; i < points.length; i++) {
         matrix[i] = [];
         for(let j = 0; j < points.length; j++) {
-            if(i == j) {
-                matrix[i][j] = {distance_length: 0, pheromones: 0, closeness: 0};
+            if(i === j) {
+                matrix[i][j] = {distanceLength: 0, pheromones: 0, closeness: 0};
             }
             else {
                 let distance = calcDistance(points[i], points[j]);
-                matrix[i][j] = {distance_length: distance, pheromones: pheromone, closeness: for_path/distance};
+                matrix[i][j] = {distanceLength: distance, pheromones: pheromone, closeness: forPath/distance};
             }
         }
     }
 }
 
-function calc_wishes(ant_wish) {
+function calcWishes(antWish) {
     let sum = 0;
-    for(let i = 0; i < ant_wish.length; i++) {
-        sum += ant_wish[i];
+    for(let i = 0; i < antWish.length; i++) {
+        sum += antWish[i];
     }
     return sum;
 }
 
-function calc_probability(visited, path) {
+function calcProbability(visited, path) {
     let probability = [];
-    let ant_wish = [];
+    let antWish = [];
 
     for(let i = 0; i < path.length; i++) {
-        if(!(visited.includes(i)) && path[i] != 0) {
-            ant_wish[i] =  Math.pow(path[i].pheromones, alfa) * Math.pow(path[i].closeness, beta);
+        if(!(visited.includes(i)) && path[i] !== 0) {
+            antWish[i] =  Math.pow(path[i].pheromones, alfa) * Math.pow(path[i].closeness, beta);
         }
         else {
-            ant_wish[i] = 0;
+            antWish[i] = 0;
         }
     }
 
-    for(let i = 0; i < ant_wish.length; i++) {
-        if(calc_wishes(ant_wish) != 0) {
-            probability[i] = ant_wish[i]/calc_wishes(ant_wish);
+    for(let i = 0; i < antWish.length; i++) {
+        if(calcWishes(antWish) !== 0) {
+            probability[i] = antWish[i]/calcWishes(antWish);
         }
         else {
             probability[i] = 0;
@@ -122,85 +122,88 @@ function calc_probability(visited, path) {
 }
 
 function select(visited, probabilities) {
-    let count_of_probability;
+    let countOfProbability;
     let range = [];
 
     for(let i = 0; i < probabilities.length; i++) {
         if(!(visited.includes(i))) {
-            count_of_probability = Math.round(probabilities[i] * 100);
-            for(let j = 0; j < count_of_probability; j++) {
+            countOfProbability = Math.round(probabilities[i] * 100);
+            for(let j = 0; j < countOfProbability; j++) {
                 range.push(i);
             }
         }
     }
 
-    let selected_point = Math.floor(Math.random() * range.length);
-    return range[selected_point];
+    let selectedPoint = Math.floor(Math.random() * range.length);
+    return range[selectedPoint];
 }
 
-function update_of_pheromones(visited) {
+function updateOfPheromones(visited) {
     for(let i = 0; i < visited.length - 1; i++) {
-        matrix[visited[i]][visited[i + 1]].pheromones = (matrix[visited[i]][visited[i + 1]].pheromones * evaporation) + (for_pheromones/matrix[visited[i]][visited[i + 1]].distance_length);
+        matrix[visited[i]][visited[i + 1]].pheromones = (matrix[visited[i]][visited[i + 1]].pheromones * evaporation) + 
+        (forPheromones/matrix[visited[i]][visited[i + 1]].distanceLength);
     }
 }
 
-function ant_algorithm(visited)
+function antAlgorithm(visited)
 {
-    all_paths = [];
+    allPaths = [];
 
     for(let i = 0; i < points.length; i++) {
         visited.push(i);
-        let probabilities = calc_probability(visited, matrix[i]);
-        while(visited.length != points.length) {
-            let cool_point = select(visited, probabilities);
-            if(!(visited.includes(cool_point))) {
-                visited.push(cool_point);
+        let probabilities = calcProbability(visited, matrix[i]);
+        while(visited.length !== points.length) {
+            let coolPoint = select(visited, probabilities);
+            if(!(visited.includes(coolPoint))) {
+                visited.push(coolPoint);
                 if(visited.length < points.length) {
-                    probabilities = calc_probability(visited, matrix[cool_point]);
+                    probabilities = calcProbability(visited, matrix[coolPoint]);
                 }
             }
         }
         visited.push(i);
-        all_paths.push({ path: [...visited], path_length: sumDistance(visited) });
+        allPaths.push({ path: [...visited], pathLength: sumDistance(visited) });
         visited = [];
     }
 }
 
 function sorting() {
-    all_paths.sort((a, b) => a.path_length - b.path_length);
+    allPaths.sort((a, b) => a.pathLength - b.pathLength);
 }
 
 document.getElementById('first').onclick = start;
 
 async function start() {
-    document.getElementById('second').disabled = true;
-    document.getElementById('third').disabled = true;
+    if (points.length !== 0) {
+        document.getElementById('second').disabled = true;
+        document.getElementById('third').disabled = true;
 
-    get_count_iteration();
-    get_matrix();
+        getCountIteration();
+        getMatrix();
 
-    let best_distance = Infinity;
-    best_path = [];
-    
-    for(let iteration = 0; iteration < count_of_iteration; iteration++) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawPoints();
+        let bestDistance = Infinity;
+        bestPath = [];
+        
+        for(let iteration = 0; iteration < countOfIteration; iteration++) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPoints();
 
-        let visited = [];
-        ant_algorithm(visited);
-        update_of_pheromones(all_paths[0].path);
-        sorting();
-        if(all_paths[0].path_length < best_distance) {
-            best_distance = all_paths[0].path_length;
-            best_path = all_paths[0].path;
+            let visited = [];
+            antAlgorithm(visited);
+            updateOfPheromones(allPaths[0].path);
+            sorting();
+            if(allPaths[0].pathLength < bestDistance) {
+                bestDistance = allPaths[0].pathLength;
+                bestPath = allPaths[0].path;
 
-            drawPath('white');
-            await new Promise(resolve => setTimeout(resolve, 1));
+                drawPath('white');
+                await new Promise(resolve => setTimeout(resolve, 1));
+            }
         }
+
+        drawPath('MediumOrchid');
+
+        document.getElementById('second').disabled = false;
+        document.getElementById('third').disabled = false;
     }
-
-    drawPath('MediumOrchid');
-
-    document.getElementById('second').disabled = false;
-    document.getElementById('third').disabled = false;
 }
