@@ -43,20 +43,20 @@ function dataProcessing(){
     for (i; i < data[0].length - 1; i++) {
         let areNums = true;
         let unique = [];
-        for (let row of data){
-            if (!isNaN(parseFloat(row[i]))){
-                row[i]=parseFloat(row[i]);//перевод строки в число
+        for (let j in data){
+            if (!isNaN(parseFloat(data[j][i]))){
+                data[j][i]=parseFloat(data[j][i]);//перевод строки в число
             }
-            if ((typeof(row[i]) === "string") && row[i] != ""){//проверка на тип данных в столбце
+            if ((typeof(data[j][i]) === "string") && data[j][i] != ""){//проверка на тип данных в столбце
                 areNums = false;
             }
-            if (!unique.includes(row[i]) || row[i] === "") {//проверка на неудачные для разделения атрибуты
-                unique.push(row[i]);
+            if (!unique.includes(data[j][i]) || data[j][i] === "") {//проверка на неудачные для разделения атрибуты
+                unique.push(data[j][i]);
             }
         }
         if (!areNums || new Set(unique).size <= 4) {
-            for (let row of data){
-                row[i] = row[i].toString();//перевод дынных столбца в один тип
+            for (let j in data){
+                data[j][i] = data[j][i].toString();//перевод дынных столбца в один тип
             }
         }
         //удаление неудачных для разделения атрибутов
