@@ -1,6 +1,5 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-ctx.font = "14px serif";
 let points = [];
 let path = [];
 let population = [];
@@ -167,45 +166,47 @@ function geneticAlgorythm()
 
 document.getElementById('first').onclick = start;
 async function start() {
-    document.getElementById('second').disabled = true;
-    document.getElementById('third').disabled = true;
+    if (points.length !== 0) {
+        document.getElementById('second').disabled = true;
+        document.getElementById('third').disabled = true;
 
-    let lastWay = [];
-    population = [];
+        let lastWay = [];
+        population = [];
 
-    getGenerationCount();
-    getPopulationCount();
-    getProbabilityMutation();
+        getGenerationCount();
+        getPopulationCount();
+        getProbabilityMutation();
 
-    for (let i = 0; i < populationCount; i++)
-    {
-        let f = randomPath();
+        for (let i = 0; i < populationCount; i++)
+        {
+            let f = randomPath();
 
-        population.push({osob: f, length: sumDistance(f)});
-    }
-    
-    for (let i = 0; i < generationCount; i++) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawPoints();
+            population.push({osob: f, length: sumDistance(f)});
+        }
+        
+        for (let i = 0; i < generationCount; i++) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPoints();
 
-        geneticAlgorythm();
+            geneticAlgorythm();
+
+            bestPath = population[0].osob;
+
+            if (bestPath !== lastWay || i === 0) {
+                let color = 'white';
+                drawPath(color);
+                await new Promise(resolve => setTimeout(resolve, 1));
+            }
+            else {
+                drawPath('white');
+            }
+            lastWay = population[0].osob;
+        }
 
         bestPath = population[0].osob;
+        drawPath('#FFF581');
 
-        if (bestPath !== lastWay || i === 0) {
-            let color = 'white';
-            drawPath(color);
-            await new Promise(resolve => setTimeout(resolve, 1));
-        }
-        else {
-            drawPath('white');
-        }
-        lastWay = population[0].osob;
+        document.getElementById('second').disabled = false;
+        document.getElementById('third').disabled = false;
     }
-
-    bestPath = population[0].osob;
-    drawPath('#FFF581');
-
-    document.getElementById('second').disabled = false;
-    document.getElementById('third').disabled = false;
 }
