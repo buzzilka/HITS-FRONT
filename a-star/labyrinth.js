@@ -254,5 +254,3 @@ canvas.addEventListener('click', function(event) {
 function redact() {
     change = document.getElementById('redact').value;
 }
-
-
