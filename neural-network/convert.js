@@ -1,3 +1,4 @@
+//https://nodejsdev.ru/api/fs/
 const fs = require("fs");
 const sharp = require("sharp");
 
