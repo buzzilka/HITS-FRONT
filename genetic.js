@@ -34,16 +34,17 @@ function sumDistance(arr) {
 }
 
 function drawPoints() {
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = '#FFF581';
     points.forEach(point => {
         ctx.beginPath();
-        ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+        ctx.arc(point.x, point.y, 8, 0, 2 * Math.PI);
         ctx.fill();
     });
 }
 
 function drawPath(color) {
     ctx.strokeStyle = color;
+    ctx.lineWidth = 5;
     ctx.beginPath();
     for (let j = 0; j < bestPath.length - 1; j++) {
         ctx.moveTo(bestPath[j].x, bestPath[j].y);
@@ -71,14 +72,12 @@ function joinPoints(color) {
 }
 
 document.getElementById('second').onclick = clear;
-
 function clear() {
     points.length = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 document.getElementById('third').onclick = toBack;
-
 function toBack() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     points.length--;
@@ -122,21 +121,25 @@ function sex() {
         let dad = population[i + 1].osob;
 
         let child = [];
+        let childGens = new Set();
 
         let countOfGens =  Math.floor(Math.random() * (mom.length - 2)) + 1;
 
         for (let i = 0; i < countOfGens; i++) {
             child.push(mom[i]);
+            childGens.add(mom[i])
         }
         for (let i = countOfGens; i < dad.length; i++)
         {
-            if (!child.includes(dad[i])) {
+            if (!childGens.has(dad[i])) {
                 child.push(dad[i]);
+                childGens.add(dad[i]);
             }
         }
         for (let i = 0; i < dad.length; i++) {
-            if (!child.includes(dad[i])) {
+            if (!childGens.has(dad[i])) {
                 child.push(dad[i]);
+                childGens.add(dad[i]);
             }
         }
 
@@ -145,7 +148,6 @@ function sex() {
         population.push({osob: child, length: sumDistance(child)});
     }
 }
-
 
 function sorting() {
     population.sort((a, b) => a.length - b.length);
@@ -157,7 +159,7 @@ function mutation(child) {
         let firstIndex = Math.floor(Math.random() * (child.length));
         let secondIndex = Math.floor(Math.random() * (child.length));
 
-        if (firstIndex != secondIndex) {
+        if (firstIndex !== secondIndex) {
             [child[firstIndex], child[secondIndex]] = [child[secondIndex], child[firstIndex]];
         }
         else {
@@ -172,13 +174,12 @@ function geneticAlgorythm()
 {
     sex();
     sorting();
-    while(population.length != populationCount) {
+    while(population.length !== populationCount) {
         population.pop();
     }
 }
 
 document.getElementById('first').onclick = start;
-
 async function start() {
     document.getElementById('second').disabled = true;
     document.getElementById('third').disabled = true;
@@ -205,39 +206,20 @@ async function start() {
 
         bestPath = population[0].osob;
 
-        if (bestPath !== lastWay || i == 0) {
+        if (bestPath !== lastWay || i === 0) {
             let color = 'white';
             drawPath(color);
             await new Promise(resolve => setTimeout(resolve, 1));
         }
         else {
-            let color = 'white'
-            drawPath(color);
+            drawPath('white');
         }
         lastWay = population[0].osob;
     }
 
     bestPath = population[0].osob;
-    let color = 'red';
-    drawPath(color);
+    drawPath('#FFF581');
 
     document.getElementById('second').disabled = false;
     document.getElementById('third').disabled = false;
-}
-
-let audio = document.getElementById('audio');
-
-document.getElementById('play').onclick = play;
-function play() {
-  audio.play();
-}
-
-document.getElementById('pause').onclick = pause;
-function pause() {
-  audio.pause();
-}
-
-document.getElementById('volume').onclick = volume;
-function volume() {
-  audio.volume = Math.random();
 }
