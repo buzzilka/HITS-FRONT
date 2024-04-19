@@ -5,38 +5,52 @@
     <title>A*</title>
     <link href="Aalg.css" rel="stylesheet">
   </head>
-  <style>
-    canvas {
-        background-color:black;
-        height: 500px;
-        width: 500px;
-        cursor: pointer;
-        border: 3px solid gray;
-        display: block;
-        margin: 0 auto;
-    }
-</style>
 <body>
-  <h1><center>Алгоритм A*</center></h1>
-  <audio src="som.mp3" id="audio1" loop="loop"></audio>
-  <audio src="evr.mp3" id="audio2" loop="loop"></audio>
-  <div id="music">
-    <button onclick="play1()"></button>
-    <button onclick="play2()"></button>
-    <button onclick="pause()"></button>
-    <button onclick="volume()"></button>
+
+  <div class="topnav">
+    <a href="/HITS-FRONT/main/main-page.html">Главная</a>
+    <a href="">Генетический Алгоритм</a>
+    <a href="">Муравьиный Алгоритм</a>
+    <a href="/HITS-FRONT/a-star/Aalg.html">Алгоритм A*</a>
+    <a href="/HITS-FRONT/clustering/cluster-main.html">Кластеризация</a>
+    <a href="/HITS-FRONT/neural-network/nnetwork.html">Нейронная Сеть</a>
+    <a href="">Дерево решений</a>
+    <a href="">Авторы</a>
   </div>
-  <canvas id="canvas" height=500px width=500px></canvas>
-  <label>Number input </label><input id="number-in" name="number-in" type="number" min="2" max="100" step="1"/>
-  <button id="input" onclick="input()">Ввод</button>
-  <p></p>
-  <select id="redact" name="redact" onchange="redact()">
-    <option value="walls">Изменить стены</option>
-    <option value="begin">Установить старт</option>
-    <option value="end">Установить финиш</option>
-  </select>
-  <p></p>
-  <button id="start" onclick="start()">Начать</button>
-  <script src="Aalg.js"></script>
+  
+  <div class="container">
+
+    <canvas id="canvas" height=600px width=600px></canvas>
+
+    <div id="settings">
+
+      <div class="but">
+        <div>Размер лабиринта</div>
+        <input id="sizeLab" type="range" min="3" max="100" step="1" value="20" oninput="outPut.value = this.value"/><output id="outPut">20</output>
+      </div>
+
+      <button id="createLab">Сгенерировать лабиринт</button>
+
+      <button id="emptyLab">Создать пустой лабиринт</button>
+      
+      <select id="redact" name="redact">
+        <option value="walls">Изменить стены</option>
+        <option value="begin">Установить старт</option>
+        <option value="end">Установить финиш</option>
+      </select>
+
+      <button id="start">Начать</button>
+      
+      <button id="deletePath">Очистить путь</button>
+      
+      <div class="but">
+        <div>Замедление анимации</div>
+        <input id="speed" type="range" min="0" max="100" step="1" value="5" oninput="output.value = this.value"><output id="output">5</output>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="main.js"  type="module" defer></script>
 </body>
 </html>
