@@ -44,9 +44,21 @@ document.getElementById("rangeHierarchical").addEventListener("change", function
 });
 
 function startAlgs() {
-    fCMeans(points, ctx, clusterCountCMeans, fuzzyNum, maxIterations,colors);
-    kMeans(points, ctx, clusterCountKMeans, colors);
-    hierarchical(points,ctx,clusterCountHierarchical,colors);
+    if (clusterCountCMeans > points.length){
+        alert("Введите корректное число кластеров для CMeans!");
+    }else{
+        fCMeans(points, ctx, clusterCountCMeans, fuzzyNum, maxIterations,colors);
+    }
+    if (clusterCountKMeans  > points.length){
+        alert("Введите корректное число кластеров для KMeans!");
+    }else{
+        kMeans(points, ctx, clusterCountKMeans, colors);
+    }
+    if (clusterCountHierarchical > points.length){
+        alert("Введите корректное число кластеров для Иерархического Алгоритма!");
+    }else{
+        hierarchical(points,ctx,clusterCountHierarchical,colors);
+    }
 }
 
 const points = [];
