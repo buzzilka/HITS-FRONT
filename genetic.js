@@ -57,20 +57,6 @@ function drawPath(color) {
     drawPoints();
 }
 
-function joinPoints(color) {
-    ctx.beginPath();
-    ctx.strokeStyle = color;
-    for(let i = 0; i < points.length; i++)
-    {
-        for(let j = 0; j < points.length; j++)
-        {
-            ctx.moveTo(points[i].x, points[i].y);
-            ctx.lineTo(points[j].x, points[j].y);
-            ctx.stroke();
-        }
-    }
-}
-
 document.getElementById('second').onclick = clear;
 function clear() {
     points.length = 0;
