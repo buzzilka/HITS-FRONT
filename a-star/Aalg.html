@@ -6,6 +6,7 @@
     <link href="Aalg.css" rel="stylesheet">
   </head>
 <body>
+
   <div class="topnav">
     <a href="/HITS-FRONT/main/main-page.html">Главная</a>
     <a href="">Генетический Алгоритм</a>
@@ -16,42 +17,40 @@
     <a href="">Дерево решений</a>
     <a href="">Авторы</a>
   </div>
-  <audio src="som.mp3" id="audio1" loop="loop"></audio>
-  <audio src="evr.mp3" id="audio2" loop="loop"></audio>
-  <div id="music">
-    <button onclick="play1()"></button>
-    <button onclick="play2()"></button>
-    <button onclick="pause()"></button>
-    <button onclick="volume()"></button>
-  </div>
+  
   <div class="container">
-    <canvas id="canvas" height=500px width=500px></canvas>
+
+    <canvas id="canvas" height=600px width=600px></canvas>
+
     <div id="settings">
-      <div id="reg">
+
+      <div id="but">
         <div>Размер лабиринта</div>
         <input id="sizeLab" type="range" min="3" max="100" step="1" value="20" oninput="outPut.value = this.value"/><output id="outPut">20</output>
       </div>
-      <br>
-      <button id="createLab" onclick="create()">Сгенерировать лабиринт</button>
-      <br>
-      <button id="emptyLab" onclick="emptyLab()">Создать пустой лабиринт</button>
-      <br>
-      <select id="redact" name="redact" onchange="redact()">
+
+      <button id="createLab">Сгенерировать лабиринт</button>
+
+      <button id="emptyLab">Создать пустой лабиринт</button>
+      
+      <select id="redact" name="redact">
         <option value="walls">Изменить стены</option>
         <option value="begin">Установить старт</option>
         <option value="end">Установить финиш</option>
       </select>
-      <br>
-      <button id="start" onclick="start()">Начать</button>
-      <br>
-      <button id="deletePath" onclick="deletePath()">Очистить путь</button>
-      <br>
-      <div id="reg">
+
+      <button id="start">Начать</button>
+      
+      <button id="deletePath">Очистить путь</button>
+      
+      <div id="but">
         <div>Замедление анимации</div>
         <input id="speed" type="range" min="0" max="100" step="1" value="5" oninput="output.value = this.value"><output id="output">5</output>
       </div>
+
     </div>
-    </div>
-  <script src="Aalg.js"></script>
+
+  </div>
+  <script src="main.js"  type="module" defer></script>
 </body>
 </html>

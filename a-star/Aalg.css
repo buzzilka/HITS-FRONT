@@ -1,100 +1,23 @@
-#music{
-  right: 0;
-  bottom: 0;
-  position: absolute;
+body{
+  background: #2f2f2f;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: linear-gradient(270deg, hsla(340, 100%, 64%, 1) 0%, hsla(340, 100%, 81%, 1) 100%);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  font-family: sans-serif;
 }
-.container {
-  margin: 2% auto;
-  display: flex;
-  justify-content: center;
-  max-height: 500px;
-}
-
-#settings {
-  margin-left: 10px;
-  display: flex;
-  flex-direction: column;
-  max-height: 500px;
-}
-@media screen and (max-width: 800px) {
-  #settings {
-    max-height: 300px; /* изменяем высоту столбца при сжатии экрана */
+@keyframes gradient {
+  0%{
+      background-position: 0 50%;
   }
-}
-
-@media screen and (max-width: 600px) {
-  #settings {
-    max-height: 200px; /* дополнительное изменение высоты столбца при сжатии экрана */
+  50%{
+      background-position: 100% 50%;
   }
-}
-#createLab, #emptyLab, #start, #deletePath, #redact {
-  background-color: #2f2f2f;
-  color: #fff;
-  font-family: Trebuchet MS;
-  font-size: 17px;
-  font-weight: 400;
-  font-style: italic;
-  text-decoration: none;
-  padding: 14px 10px;
-  border: 0px solid #000000;
-  border-radius: 10px;
-  display: inline-block;
-  margin-bottom: 2.5px; 
-  min-height: 68px; 
-  max-height: 68px; 
-  white-space: nowrap;
-  text-align: center;
-  cursor: pointer; 
-}
-input[type=range] {
-  -webkit-appearance: none;
-  height: 7px;
-  background: #e9e9e9;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: #ff2972;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-  cursor: pointer; 
-}
-input[type=range]::-webkit-slider-thumb:hover {
-  background: #EB1A60;
-}
-#reg {
-  padding: 14px 10px;
-  background-color: #2f2f2f;
-  border: 0px solid #000000;
-  border-radius: 10px; 
-  color: #fff;
-  font-family: Trebuchet MS;
-  font-size: 17px;
-  font-weight: 400;
-  font-style: italic;
-  text-decoration: none;
-  text-align: center;
-  max-height: 50px;
-}
-
-#createLab:hover, #emptyLab:hover, #start:hover, #deletePath:hover, #redact:hover{
-  background-color: #5c5c5c;
-}
-
-#createLab:active, #emptyLab:active, #start:active, #deletePath:active{
-  transform: scale(0.95);
-}
-#canvas{
-  background-color: rgb(0, 0, 0);
-  width: 600px;
-  height: 600px;
-  cursor: pointer;
-  border-radius: 10px;
+  100%{
+      background-position: 0 50%;
+  }
 }
 
 .topnav {
@@ -120,25 +43,89 @@ input[type=range]::-webkit-slider-thumb:hover {
   color: white;
 }
 
-body{
-  background: #2f2f2f;
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: linear-gradient(270deg, hsla(340, 100%, 64%, 1) 0%, hsla(340, 100%, 81%, 1) 100%);
-  background-size: 400% 400%;
-  animation: gradient 10s ease infinite;
-  font-family: sans-serif;
+.container {
+  margin: 2% auto;
+  display: flex;
+  justify-content: center;
+  max-height: 500px;
 }
 
-@keyframes gradient {
-  0%{
-      background-position: 0 50%;
-  }
-  50%{
-      background-position: 100% 50%;
-  }
-  100%{
-      background-position: 0 50%;
-  }
+#canvas{
+  background-color: rgb(0, 0, 0);
+  width: 600px;
+  height: 600px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+#settings {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  max-height: 500px;
+  gap: 18.5px;
+}
+#settings>* {
+  flex: 1 1 160px;
+}
+
+#createLab, #emptyLab, #start, #deletePath, #redact {
+  background-color: #2f2f2f;
+  color: #fff;
+  font-family: Trebuchet MS;
+  font-size: 17px;
+  font-weight: 400;
+  font-style: italic;
+  text-decoration: none;
+  padding: 14px 10px;
+  border: 0px solid #000000;
+  border-radius: 10px;
+  display: inline-block;
+  margin-bottom: 2.5px; 
+  min-height: 68px; 
+  max-height: 68px; 
+  white-space: nowrap;
+  text-align: center;
+  cursor: pointer; 
+}
+#createLab:hover, #emptyLab:hover, #start:hover, #deletePath:hover, #redact:hover{
+  background-color: #5c5c5c;
+}
+#createLab:active, #emptyLab:active, #start:active, #deletePath:active{
+  transform: scale(0.95);
+}
+
+#but {
+  padding: 14px 10px;
+  background-color: #2f2f2f;
+  border: 0px solid #000000;
+  border-radius: 10px; 
+  color: #fff;
+  font-family: Trebuchet MS;
+  font-size: 17px;
+  font-weight: 400;
+  font-style: italic;
+  text-decoration: none;
+  text-align: center;
+  max-height: 50px;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  height: 7px;
+  background: #e9e9e9;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #ff2972;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  cursor: pointer; 
+}
+input[type=range]::-webkit-slider-thumb:hover {
+  background: #EB1A60;
 }
