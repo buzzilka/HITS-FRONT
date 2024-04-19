@@ -35,9 +35,10 @@ body{
 #canvas{
     border-radius: 4px;
     background-color: rgb(0, 0, 0);
-    width: 1000px;
-    height: 600px;
+    width: 800px;
+    height: 500px;
 }
+
 .topnav {
     background-color: #333;
     overflow: hidden;
@@ -46,12 +47,13 @@ body{
 }
 
 .topnav a {
-    float: left;
+    flex: 1; 
     color: #f2f2f2;
     text-align: center;
-    padding: 30px 65px;
+    padding: 30px 0px;
     text-decoration: none;
     font-size: 15px;
+    box-sizing: border-box; 
 }
 
 .topnav a:hover {
