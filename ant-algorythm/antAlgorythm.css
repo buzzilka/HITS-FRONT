@@ -24,8 +24,8 @@ body{
 #canvas{
     border-radius: 10px;
     background-color: rgb(0, 0, 0);
-    width: 650px;
-    height: 650px;
+    width: 500px;
+    height: 500px;
 }
 
 .container {
